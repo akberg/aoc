@@ -1,0 +1,31 @@
+[package]
+name = "aoc2020"
+version = "0.1.0"
+authors = ["Andreas K. Berg <andreaskb98@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+regex = "^1.4.2"        # (day 2)
+lazy_static = "^1.4.0"  # lazy_static macro (day 2)
+chrono = "*"            # High precision timing
+# tokio = { version = "^0.2.21", features = ["macros"] }
+# hyper = "^0.13.5"
+
+[dev-dependencies]
+criterion_bencher_compat = "0.3"
+# criterion = "^0.3"
+
+
+[[bin]]
+name = "aoc2020"
+path = "src/main.rs"
+
+
+[[bench]]
+name = "bench"
+harness = false
+path = "benches/bench.rs"
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
