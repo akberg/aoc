@@ -21,11 +21,6 @@ name = "aoc2020"
 path = "src/main.rs"
 
 
-[[bench]]
-name = "bench"
-harness = false
-path = "benches/bench.rs"
-
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

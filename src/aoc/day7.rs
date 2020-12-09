@@ -3,8 +3,9 @@ extern crate regex;
 use std::collections::{HashSet, HashMap, VecDeque};
 use regex::Regex;
 
-#[allow(unused)]
-fn input() -> (HashMap<String, HashSet<(String, usize)>>, HashMap<String, HashSet<(String, usize)>>) {
+type BagMap = HashMap<String, HashSet<(String, usize)>>;
+
+pub fn input() -> (BagMap, BagMap) {
     let mut containers1 = HashMap::new();
     let mut containers2 = HashMap::new();
     let ifile = crate::aoc::input_raw(7);
@@ -14,7 +15,7 @@ fn input() -> (HashMap<String, HashSet<(String, usize)>>, HashMap<String, HashSe
     (containers1, containers2)
 }
 
-fn parse_line(map1: &mut HashMap<String, HashSet<(String, usize)>>, map2: &mut HashMap<String, HashSet<(String, usize)>>, line: &str) {
+fn parse_line(map1: &mut BagMap, map2: &mut BagMap, line: &str) {
 
     lazy_static! {
         static ref RE: Regex = Regex::new(r"(?P<num>[0-9]) (?P<bag>[a-z]+ [a-z]+)").unwrap();
@@ -38,7 +39,7 @@ fn parse_line(map1: &mut HashMap<String, HashSet<(String, usize)>>, map2: &mut H
 }
 
 #[allow(unused)]
-fn part1(inputs: &HashMap<String, HashSet<(String, usize)>>) -> usize {
+pub fn part1(inputs: &BagMap) -> usize {
     // Visited nodes when parsing the tree from "shiny gold" bags
     let mut visited: HashSet<String> = HashSet::with_capacity(inputs.len());
     let mut queue = VecDeque::new();
@@ -55,7 +56,7 @@ fn part1(inputs: &HashMap<String, HashSet<(String, usize)>>) -> usize {
 }
 
 #[allow(unused)]
-fn part2(inputs: &HashMap<String, HashSet<(String, usize)>>) -> usize {
+pub fn part2(inputs: &BagMap) -> usize {
     // Visited nodes when parsing the tree from "shiny gold" bags
     let mut visited: Vec<(String, usize)> = Vec::new();
     let mut queue = VecDeque::new();
@@ -74,28 +75,6 @@ fn part2(inputs: &HashMap<String, HashSet<(String, usize)>>) -> usize {
 }
 
 #[test]
-fn test_day7_parse_line() {
-    let inputs = String::from("light red bags contain 1 bright white bag, 2 muted yellow bags.\n\
-        dark orange bags contain 3 bright white bags, 4 muted yellow bags.\n\
-        bright white bags contain 1 shiny gold bag.\n\
-        muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.\n\
-        shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.\n\
-        dark olive bags contain 3 faded blue bags, 4 dotted black bags.\n\
-        vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.\n\
-        faded blue bags contain no other bags.\n\
-        dotted black bags contain no other bags.");
-    let mut containers1 = HashMap::new();
-    let mut containers2 = HashMap::new();
-    for line in inputs.lines() {
-        println!("to parse: {}", line);
-        parse_line(&mut containers1, &mut containers2, line);
-    }
-    assert_eq!(true, containers1["vibrant plum"].contains(&(String::from("shiny gold"), 2)));
-    assert_eq!(true, containers2["shiny gold"].contains(&(String::from("dark olive"), 1)));
-}
-
-
-#[test]
 fn test_day7_part1() {
     let inputs = String::from("light red bags contain 1 bright white bag, 2 muted yellow bags.\n\
         dark orange bags contain 3 bright white bags, 4 muted yellow bags.\n\
@@ -106,8 +85,8 @@ fn test_day7_part1() {
         vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.\n\
         faded blue bags contain no other bags.\n\
         dotted black bags contain no other bags.");
-    let mut containers: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
-    let mut dummy: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
+    let mut containers: BagMap = HashMap::new();
+    let mut dummy: BagMap = HashMap::new();
     for line in inputs.lines() {
         parse_line(&mut containers, &mut dummy, line);
     }
@@ -125,8 +104,8 @@ fn test_day7_part2() {
         vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.\n\
         faded blue bags contain no other bags.\n\
         dotted black bags contain no other bags.");
-    let mut containers: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
-    let mut dummy: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
+    let mut containers: BagMap = HashMap::new();
+    let mut dummy: BagMap = HashMap::new();
     for line in inputs.lines() {
         parse_line(&mut dummy, &mut containers, line);
     }
@@ -138,8 +117,8 @@ fn test_day7_part2() {
     dark green bags contain 2 dark blue bags.\n\
     dark blue bags contain 2 dark violet bags.\n\
     dark violet bags contain no other bags.");
-    let mut containers: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
-    let mut dummy: HashMap<String, HashSet<(String, usize)>> = HashMap::new();
+    let mut containers: BagMap = HashMap::new();
+    let mut dummy: BagMap = HashMap::new();
     for line in inputs.lines() {
         parse_line(&mut dummy, &mut containers, line);
     }
@@ -154,9 +133,9 @@ fn run_day7() {
     let inputs = input();
     println!("{:?}", start.elapsed().unwrap());
     let pt_start = SystemTime::now();
-    print!("Day 6 part 1: ");
+    print!("Day 7 part 1: ");
     println!("{} - in {:?}", part1(&inputs.0), pt_start.elapsed().unwrap());
-    print!("Day 6 part 2: ");
+    print!("Day 7 part 2: ");
     let pt_start = SystemTime::now();
     println!("{} - in {:?}", part2(&inputs.1), pt_start.elapsed().unwrap());
     println!("Total duration: {:?}", start.elapsed().unwrap())
