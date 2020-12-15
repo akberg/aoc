@@ -1,13 +1,13 @@
 
 #[allow(unused)]
-pub fn input() -> Vec<u64> {
+pub fn input() -> Vec<i64> {
     crate::aoc::input_raw(9)
         .lines()
-        .map(|i| i.parse::<u64>().unwrap())
+        .map(|i| i.parse::<i64>().unwrap())
         .collect()
 }
 
-fn find_weakness2(stream: &[u64], preamble: usize) -> u64 {
+fn find_weakness2(stream: &[i64], preamble: usize) -> i64 {
     stream[
         (preamble..stream.len())
             .find(|&i| !(i-preamble..i)
@@ -15,7 +15,7 @@ fn find_weakness2(stream: &[u64], preamble: usize) -> u64 {
                     .any(|y| stream[x]+stream[y]==stream[i]))).unwrap()
         ]
 }
-fn find_weakness(stream: &[u64], preamble: usize) -> u64 {
+fn find_weakness(stream: &[i64], preamble: usize) -> i64 {
     for i in preamble..stream.len() as usize {
         let n = stream[i];
         let mut found = false;
@@ -29,10 +29,10 @@ fn find_weakness(stream: &[u64], preamble: usize) -> u64 {
         }
         if !found { return n; }
     }
-    0
+    panic!("No result")
 }
 
-fn employ_weakness(stream: &[u64], w: u64) -> u64 {
+fn employ_weakness(stream: &[i64], w: i64) -> i64 {
     for i in 0..stream.len() {
         let mut sum = 0;
         for j in i..stream.len() {
@@ -45,16 +45,16 @@ fn employ_weakness(stream: &[u64], w: u64) -> u64 {
             }
         }
     }
-    0
+    panic!("No result")
 }
 
 #[allow(unused)]
-pub fn part1(inputs: &[u64]) -> u64 {
+pub fn part1(inputs: &[i64]) -> i64 {
     find_weakness2(inputs, 25)
 } // correct: 31161678
 
 #[allow(unused)]
-pub fn part2(inputs: &[u64]) -> u64 {
+pub fn part2(inputs: &[i64]) -> i64 {
     employ_weakness(inputs, find_weakness(inputs, 25))
 }
 
