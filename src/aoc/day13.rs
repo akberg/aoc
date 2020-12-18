@@ -21,24 +21,15 @@ pub fn part1(inputs: &(i64, Vec<i64>)) -> i64 { // arr + t - arr % t
 // Chinese remainder theorem (all bus numbers are prime numbers)
 #[allow(unused)]
 pub fn part2(inputs: &(i64, Vec<i64>)) -> i64 {
-    let a = inputs.1
-        .iter()
-        .enumerate()
-        .filter_map(|(i, v)| match v { 0=>None, _=>Some((i as i64 % *v, *v))})
-        .collect::<Vec<(i64, i64)>>();
-    println!("{:?}", a);
-    let start: (i64, i64) = (0, inputs.0);
-    a.iter()
-    //.skip(1)
-    .fold(start, |(a1, n1), (a2, n2)| {
-        let (m1, m2) = extended_gcd(&n1, n2);
-        let n = n1 * n2;
-        let a12 = (((a2 * n1 * m1 + a1 * n2 * m2)%n) + n)%n;
-        println!("{} % {} id={}, {} % {} id={} n1*n2={} a1,2={}", a1, n1, m1, a2, n2, m2, n, a12);
-        (a12, n)
-    }).0
-    //.for_each(|w| println!("{} {}: {:?}", w[0].1, w[1].1, extended_gcd(w[0].1, w[1].1)));
-    
+    let mut timestamp: i64 = 0;
+    let mut running_prod: i64 = 1;
+    for (i, a) in inputs.1.iter().enumerate().filter(|(i, a)| **a != 0) {
+        while (timestamp + i as i64) % *a != 0 {
+            timestamp += running_prod;
+        }
+        running_prod *= *a;
+    }
+    timestamp
 }
 
 fn extended_gcd(a: &i64, b: &i64) -> (i64, i64) {

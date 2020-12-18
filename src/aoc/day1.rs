@@ -1,5 +1,6 @@
 
 use std::fs;
+#[allow(unused)]
 pub fn input() -> Vec<i32> {
     let filename = format!("inputs/day1.txt");
     fs::read_to_string(filename)

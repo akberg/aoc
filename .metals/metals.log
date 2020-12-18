@@ -1,0 +1,19 @@
+2020.12.16 10:58:40 INFO  Started: Metals version 0.9.7 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.16 10:58:42 INFO  time: initialize in 1.43s
+2020.12.16 10:58:47 WARN  Build server is not auto-connectable.
+2020.12.16 10:58:47 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+des 16, 2020 10:58:49 AM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTraceNotification
+2020.12.16 14:30:19 INFO  Started: Metals version 0.9.7 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.16 14:30:20 INFO  time: initialize in 1.21s
+2020.12.16 14:30:26 WARN  Build server is not auto-connectable.
+2020.12.16 14:30:26 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.12.16 14:38:07 INFO  Started: Metals version 0.9.7 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.16 14:38:09 INFO  time: initialize in 1.73s
+2020.12.16 14:38:15 WARN  Build server is not auto-connectable.
+2020.12.16 14:38:15 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.12.17 13:20:01 INFO  Started: Metals version 0.9.7 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.17 13:20:02 INFO  time: initialize in 0.87s
+2020.12.17 13:20:07 WARN  Build server is not auto-connectable.
+2020.12.17 13:20:07 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.12.18 18:19:46 INFO  shutting down Metals

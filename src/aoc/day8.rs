@@ -1,5 +1,5 @@
 
-use std::collections::{HashSet, HashMap};
+use std::collections::HashSet;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq)]
@@ -12,7 +12,7 @@ impl FromStr for OpCode {
             "nop" => Ok(Self::NOP),
             "acc" => Ok(Self::ACC),
             "jmp" => Ok(Self::JMP),
-            e => Err("Unknown opcode")
+            _e => Err("Unknown opcode")
         }
     }
 }
