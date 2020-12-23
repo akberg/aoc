@@ -46,14 +46,18 @@ pub fn part1(mut game: VecDeque<u64>) -> VecDeque<u64> {
 
 #[allow(unused)]
 pub fn part2(mut game: VecDeque<u64>) -> u64 {
+    use std::time::SystemTime;
+    let pt_start = SystemTime::now();
     for i in game.len()..10000000 {
         game.push_back(i as u64 + 1);
     }
     let s = game.len();
     let mut index = 0;
+    let mut lap = SystemTime::now();
     for i in 0..10000000 {
         if i % 1000 == 0 {
-            println!("\nround: {0}", i);
+            println!("\nround: {:#8}\tround time: {:?} - total time: {:?}", i, lap.elapsed().unwrap(),  pt_start.elapsed().unwrap());
+            lap = SystemTime::now();
         }
         
         
