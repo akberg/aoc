@@ -32,24 +32,6 @@ pub fn part2(inputs: &(i64, Vec<i64>)) -> i64 {
     timestamp
 }
 
-fn extended_gcd(a: &i64, b: &i64) -> (i64, i64) {
-    let (mut old_r, mut r) = (*a, *b);
-    let (mut old_s, mut s) = (1, 0);
-    let (mut old_t, mut t) = (0, 1);
-    while r != 0 {
-        let q = old_r / r;
-        let mut b = r;
-        r = old_r - q*r;
-        old_r = b;
-        b = s;
-        s = old_s - q*s;
-        old_s = b;
-        b = t;
-        t = old_t - q*t;
-        old_t = b;
-    }
-    (old_s, old_t)
-}
 
 #[test]
 fn test_day13_part1() {
@@ -91,12 +73,6 @@ fn test_day13_part2_4() {
     assert_eq!(779210, part2(&inputs));
 }
 
-#[test]
-fn test_day13_part2_5() {
-    println!("{:?} {:?}", extended_gcd(&3, &4), extended_gcd(&12, &5));
-    let inputs = (1, vec![3, 0, 0, 4, 5]);
-    assert_eq!(39, part2(&inputs));
-}
 
 #[test]
 fn run_day13() {

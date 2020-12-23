@@ -9,6 +9,7 @@ pub fn input() -> Vec<String> {
         .collect::<Vec<String>>()
 }
 
+#[allow(unused)]
 pub fn part1(inputs: &Vec<String>) -> usize {
     inputs.iter()
         .map(|grp| grp.split_ascii_whitespace()
@@ -18,6 +19,7 @@ pub fn part1(inputs: &Vec<String>) -> usize {
         .sum()
 }
 
+#[allow(unused)]
 pub fn part2(inputs: &Vec<String>) -> usize {
     inputs.iter()
         .map(|grp| grp.split_ascii_whitespace()

@@ -1,6 +1,7 @@
 
 static EYE_COLOR: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 
+#[allow(unused)]
 pub fn input() -> Vec<String> {
     use std::fs;
     let filename = format!("inputs/day4.txt");

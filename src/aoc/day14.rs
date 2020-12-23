@@ -2,11 +2,14 @@ extern crate regex;
 use regex::Regex;
 use std::collections::HashMap;
 
-fn input() -> String {
+#[allow(unused)]
+pub fn input() -> String {
     crate::aoc::input_raw(14)
         
 }
 
+
+#[allow(unused)]
 pub fn part1(inputs: &str) -> u64 {
     lazy_static! {
         static ref RE: Regex = Regex::new(
@@ -36,6 +39,7 @@ pub fn part1(inputs: &str) -> u64 {
     mem.values().sum()
 }
 
+#[allow(unused)]
 pub fn part2(inputs: &str) -> u64 {
     lazy_static! {
         static ref RE: Regex = Regex::new(

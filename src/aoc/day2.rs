@@ -17,6 +17,7 @@ fn parse_input(inputs: &String) -> (usize, usize, char, String) {
     )
 }
 
+#[allow(unused)]
 pub fn input() -> Vec<(usize, usize, char, String)> {
     let mut inputs: Vec<(usize, usize, char, String)> = Vec::new();
     for e in super::input(2).iter() {

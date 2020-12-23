@@ -5,6 +5,7 @@ use regex::Regex;
 
 type BagMap = HashMap<String, HashSet<(String, usize)>>;
 
+#[allow(unused)]
 pub fn input() -> (BagMap, BagMap) {
     let mut containers1 = HashMap::new();
     let mut containers2 = HashMap::new();
@@ -15,6 +16,7 @@ pub fn input() -> (BagMap, BagMap) {
     (containers1, containers2)
 }
 
+#[allow(unused)]
 fn parse_line(map1: &mut BagMap, map2: &mut BagMap, line: &str) {
 
     lazy_static! {

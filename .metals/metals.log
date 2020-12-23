@@ -17,3 +17,11 @@ INFO: Unsupported notification method: $/setTraceNotification
 2020.12.17 13:20:07 WARN  Build server is not auto-connectable.
 2020.12.17 13:20:07 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
 2020.12.18 18:19:46 INFO  shutting down Metals
+2020.12.19 19:14:54 INFO  Started: Metals version 0.9.7 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.19 19:14:56 INFO  time: initialize in 1.31s
+2020.12.19 19:14:57 WARN  Build server is not auto-connectable.
+2020.12.19 19:14:57 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.12.22 11:19:04 INFO  Started: Metals version 0.9.8 in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020' for client vscode.
+2020.12.22 11:19:05 INFO  time: initialize in 1.12s
+2020.12.22 11:19:10 WARN  Build server is not auto-connectable.
+2020.12.22 11:19:10 WARN  no build tool detected in workspace 'C:\Users\Andreas\Documents\Dev\Rust\aoc2020'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 

@@ -5,6 +5,8 @@ authors = ["Andreas K. Berg <andreaskb98@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+pest = "*"              # (day 19)
+pest_derive = "*"
 either = "*"            # (day 18)
 regex = "^1.4.2"        # (day 2)
 lazy_static = "^1.4.0"  # lazy_static macro (day 2)

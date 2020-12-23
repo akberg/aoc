@@ -2,6 +2,7 @@ extern crate regex;
 // use regex::Regex;
 use std::collections::HashMap;
 
+#[allow(unused)]
 pub fn input() -> Vec<usize> {
     crate::aoc::input_raw(15)
         .split(",")
@@ -10,6 +11,8 @@ pub fn input() -> Vec<usize> {
         
 }
 
+
+#[allow(unused)]
 pub fn part1(inputs: &[usize]) -> usize {
     let mut log: HashMap<usize, (usize, usize)> = HashMap::new();
     let mut prev: usize = inputs[0];
@@ -30,6 +33,7 @@ pub fn part1(inputs: &[usize]) -> usize {
     prev
 }
 
+#[allow(unused)]
 pub fn part2(inputs: &[usize]) -> usize {
     let mut log: HashMap<usize, usize> = HashMap::with_capacity(30000000);
     let mut prev: usize = inputs[0];
