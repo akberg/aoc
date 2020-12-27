@@ -2,8 +2,9 @@ extern crate regex;
 
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
-use std::hash::Hash;
+//use std::hash::Hash;
 
+#[allow(unused)]
 pub fn input() -> (
     HashMap<String, usize>,
     HashMap<String, HashMap<String, usize>>,
@@ -12,40 +13,6 @@ pub fn input() -> (
 }
 
 
-// Domains: ingredients
-// Domains: possible matched allergens
-#[derive(Debug)]
-struct CSP<T: PartialEq + Eq + Hash + Clone, V: PartialEq + Eq + Hash + Clone> {
-    variables: HashSet<T>,      
-    domains: HashMap<T, HashSet<V>>,
-    constraints: HashMap<T, HashMap<T, Vec<(V, V)>>>,//fn (V, V) -> bool,//
-}
-impl<T: PartialEq + Eq + Hash + Clone, V: PartialEq + Eq + Hash + Clone> CSP<T, V> {
-    pub fn get_all_arcs(&self) -> Vec<(T, T)> {
-        let mut ret = Vec::new();
-        for x in &self.variables {
-            for y in &self.variables {
-                if x != y {
-                    ret.push((x.clone(), y.clone()));
-                }
-            }
-        }
-        ret
-    }
-
-    fn select_unassigned_variable(&self, assignments: &HashMap<T, HashSet<V>>) -> Option<V> {
-        None
-    }
-
-    pub fn backtrack(&self, assignments: HashMap<T, HashSet<V>>) -> Option<HashMap<T, HashSet<V>>> {
-        if assignments.values().all(|x| x.len() == 1) {
-            return Some(assignments)
-        } else {
-            let var = self.select_unassigned_variable(&assignments);
-            None
-        }
-    }
-}
                                 // Allergen     Ingredient      matches
 fn parse_input(inputs: &str) -> (HashMap<String, usize>, HashMap<String, HashMap<String, usize>>) {
     let re = Regex::new(r"(?P<ingredients>[^\(]+)\(contains (?P<allergens>[^\(-\)]+)\)").unwrap();
@@ -125,65 +92,6 @@ fn assign_allergen(mut csp: HashMap<String, HashMap<String, usize>>) -> (String,
     
 }
 
-fn make_csp(inputs: &str) -> CSP<String, String> {
-    let re = Regex::new(r"(?P<ingredients>[^\(]+)\(contains (?P<allergens>[^\(-\)]+)\)").unwrap();
-    let mut variables = HashSet::new();
-    let mut domains = HashMap::new();
-    
-    for line in inputs.lines() {
-        let cap = re.captures(line).unwrap();
-        let vars = cap["ingredients"].trim().split_ascii_whitespace();
-        let vals = cap["allergens"].split(", ").collect::<Vec<_>>();
-        for v in vars {
-            variables.insert(v.to_owned());
-            let e = domains.entry(v.to_owned()).or_insert(HashSet::new());
-            e.insert(String::from("unknown"));
-            for val in &vals {
-                e.insert((*val).to_owned());
-            }
-        }
-    }
-    let mut constraints = HashMap::new();
-    // Add constrained value pairs
-    for x1 in domains.keys() {
-        let mut e = HashMap::new();
-        for x2 in domains.keys() {
-            if x1 == x2 { continue }
-            let mut f = Vec::new();
-            for y1 in domains.get(x1).unwrap() {
-                for y2 in domains.get(x2).unwrap() {
-                    if y1 == "unknown" || y2 == "unknown" || y1 != y2 {
-                        f.push((y1.clone(), y2.clone()));
-                    }
-                }
-            }
-            e.insert(x2.clone(), f);
-        }
-        constraints.insert(x1.clone(), e);
-    }
-    //let constraints: fn(String, String) -> bool =  |y1, y2| y1 == "unknown" || y2 == "unknown" || y1 != y2;
-    CSP { domains, variables, constraints }
-}
-
-
-// fn ac3<T: PartialEq + Eq + Hash + Clone, V: PartialEq + Eq + Hash + Clone>(csp: &mut CSP<T, V>) -> HashMap<T, HashSet<V>> {
-//     let mut arcs = csp.get_all_arcs();
-//     let mut assignments = csp.domains.clone();
-
-//     while !arcs.is_empty() {
-//         let (x1, x2) = arcs.pop().unwrap();
-//         if ac3_revise(&mut assignments, csp.constraints, x1.clone(), x2.clone()) {
-//             for x in &csp.variables {
-//                 if *x != x1 && *x != x2 {
-//                     arcs.insert(0, (x1.clone(), x.clone()));
-//                 }
-//             }
-//         }
-//     }
-//     return assignments
-// }
-
-
 
 #[allow(unused)]
 pub fn part1(map: &HashMap<String, HashMap<String, usize>>, count: HashMap<String, usize>) -> i64 {
@@ -198,17 +106,6 @@ pub fn part2(map: &HashMap<String, HashMap<String, usize>>) -> String {
     a.sort_by_key(|k| k.1.to_owned());
     println!("{:?}", a);
     a.iter().map(|k|k.0.to_owned()).collect::<Vec<_>>().join(",")
-}
-
-#[test]
-fn test_day21_make_csp() {
-    let s = "mxmxvkd kfcds sqjhc nhms (contains dairy, fish)\n\
-    trh fvjkl sbzzf mxmxvkd (contains dairy)\n\
-    sqjhc fvjkl (contains soy)\n\
-    sqjhc mxmxvkd sbzzf (contains fish)";
-
-    let csp = make_csp(s);
-    println!("{:?}", csp);
 }
 
 #[test]

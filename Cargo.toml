@@ -5,6 +5,9 @@ authors = ["Andreas K. Berg <andreaskb98@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+# nalgebra = "*"
+# rayon = "*"             # parallel iterator (day 25)
+num = "*"               # pow (day 25)
 pest = "*"              # (day 19)
 pest_derive = "*"
 either = "*"            # (day 18)

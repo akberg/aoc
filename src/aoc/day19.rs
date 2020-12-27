@@ -195,21 +195,10 @@ fn test_day19_part1() {
     assert_eq!(2, part1(&rules, sentences));
 }
 
-#[test]
-fn test_day19_build_grammar() {
-    let rules = "0: 4 1 5\n\
-    1: 2 3 | 3 2\n\
-    2: 4 4 | 5 5\n\
-    3: 4 5 | 5 4\n\
-    4: \"a\"\n\
-    5: \"b\"";
-
-}
-
 
 #[test]
 fn test_day19_part2() {
-    let rules = parse_rules2("42: 9 14 | 10 1\n\
+    let _rules = parse_rules2("42: 9 14 | 10 1\n\
         9: 14 27 | 1 26\n\
         10: 23 14 | 28 1\n\
         1: \"a\"\n\
@@ -258,7 +247,7 @@ fn test_day19_part2() {
         babaaabbbaaabaababbaabababaaab\n\
         aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba";
     //let inputs = "aaaaabbaabaaaaababaa";
-    assert_eq!(12, part2(&rules, inputs));
+    assert_eq!(12, part2(&_rules, inputs));
 }
 
 
