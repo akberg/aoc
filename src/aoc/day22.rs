@@ -96,7 +96,6 @@ fn recursive_war_game(mut p1: Deck,
         // Avoid infinite recursion, player 1 wins if
         // configuration has been seen previously
         if log.contains(&(p1.clone(), p2.clone())) {
-            // TODO: Can happen on depth 0?
             //println!("loop!");
             return Right(One)
         }
@@ -182,6 +181,8 @@ fn test_hashset() {
     p1.push_back(x);
     assert_eq!(true, set.contains(&(p1.clone(), p2.clone())));
 }
+
+
 #[test]
 fn run_day22() {
     use std::time::SystemTime;
