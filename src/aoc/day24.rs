@@ -43,22 +43,6 @@ fn parse_tiles(mut line: &str) -> Vec<Dir> {
 #[allow(unused)]
 pub fn part1(inputs: &str) -> usize {
     init_tiles(inputs).len()
-    // use Dir::*;
-    // let mut blacks = HashSet::new();
-    // for line in inputs.lines() {
-    //     let t = parse_tiles(line).iter().fold((0, 0), |(ax, ay), d| match d {
-    //         E => (ax-1, ay),
-    //         W => (ax+1, ay),
-    //         SE => (ax, ay-1),
-    //         SW => (ax+1, ay-1),
-    //         NW => (ax, ay+1),
-    //         NE => (ax-1, ay+1)
-    //     });
-    //     if !blacks.insert(t) {
-    //         blacks.remove(&t);
-    //     }
-    // }
-    // blacks.len()
 }
 
 fn init_tiles(inputs: &str) -> HashSet<(i32, i32)> {

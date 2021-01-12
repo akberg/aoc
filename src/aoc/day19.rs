@@ -115,57 +115,6 @@ pub fn part2(rules: &Regex, sentences: &str) -> i64 {
     .count() as i64
 }
 
-// use either::Either;
-// #[derive(Debug, PartialEq, Clone)]
-// enum Expression {
-    // Terminal(char),
-    // Choice(Vec<usize>, Vec<usize>),
-    // One(Vec<usize>),
-// }
-
-// fn parse_it(sentence: &[char], rules: &HashMap<usize, Expression>, r: usize) {
-    // let mut fallback = Vec::new();  // Stack of OR-branches to fall back on when backtracking
-    // let mut queue = Vec::new();     // Matching queue
-    // let mut matches = Vec::new();   // Matching path so far
-    // let i: usize = 0;               // Parsing index
-
-    // loop {
-        // let rule = rules.get(&r).unwrap();
-        // match rule {
-            // Expression::Terminal(c) => {
-                // // Terminal
-                // if *c == sentence[i] {
-
-                // } else {
-
-                // }
-            // },
-            // Expression::Choice(left, right) => {
-                // // Queue left and backup with right
-                // fallback.push(*right);
-                // while !left.is_empty() {
-                    // queue.push(left.pop());
-                // }
-
-            // },
-            // Expression::One(seq) => {
-                // // Queue sequence and continue
-
-            // }
-        // }
-        // if let Expression::Terminal(c) = rule {
-            // // Terminal
-            // if *c == sentence[i] {
-                // // Terminal match
-            // } else {
-                // // Match fail - backtrack
-            // }
-        // } else {
-            // // Non-terminal
-        // }
-    // }
-// }
-
 
 #[test]
 fn test_day19_parse_rules() {

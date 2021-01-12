@@ -46,7 +46,7 @@ impl Tile {
     pub fn all_borders(&self) -> [u16; 8] {
         let mut ret = [0;8];
         
-        for i in 0..self.bmp.len() {
+        for i in 0..self.bmp.len() { // Clockwise (lower flipped is left to right)
             ret[0] += (self.bmp[0][self.bmp.len()-i-1] as u16) << i;                    // upper
             ret[1] += (self.bmp[0][i] as u16) << i;                                     // upper flipped 
             ret[2] += (self.bmp[self.bmp.len()-1][self.bmp.len()-i-1] as u16) << i;     // lower
@@ -58,9 +58,26 @@ impl Tile {
         }
         ret
     }
+    pub fn get_border(&self, rot: Rotation, flip: bool) -> u16 {
+        use Rotation::*;
+        let i = match (rot, flip) {
+            (U, false) => 0,
+            (U, true) => 1,
+            (D, true) => 2,
+            (D, false) => 3,
+            (L, true) => 4,
+            (L, false) => 5,
+            (R, false) => 6,
+            (R, true) => 7
+        };
+        self.all_borders()[i]
+    }
     // Place tile in image with given orientation
     pub fn print(&self, image: &mut Vec<Vec<bool>>, x: usize, y: usize, rot: Rotation, flip: bool) {
         use Rotation::*;
+        let x = x * 8;
+        let y = y * 8;
+
         match (rot, flip) {
             (U, false) => {
                 for i in 0..self.bmp.len()-2 {
@@ -69,7 +86,7 @@ impl Tile {
                     }
                 }
             },
-            (R, false) => {
+            (R, false) => { // TODO
                 for i in 0..self.bmp.len()-2 {
                     for j in 0..self.bmp.len()-2 {
                         image[y+j][x+self.bmp.len()-i-3] = self.bmp[i+1][j+1] == 1;
@@ -83,8 +100,12 @@ impl Tile {
                     }
                 }
             },
-            (L, false) => {
-
+            (L, false) => { // TODO
+                for i in 0..self.bmp.len()-2 {
+                    for j in 0..self.bmp.len()-2 {
+                        image[y+self.bmp.len()-j-3][x+i] = self.bmp[i+1][j+1] == 1;
+                    }
+                }
             },
             (U, true) => {
                 for i in 0..self.bmp.len()-2 {
@@ -93,10 +114,10 @@ impl Tile {
                     }
                 }
             },
-            (R, true) => {
+            (R, true) => { // TODO
                 for i in 0..self.bmp.len()-2 {
                     for j in 0..self.bmp.len()-2 {
-                        image[y+j][x+self.bmp.len()-i-3] = self.bmp[i+1][self.bmp.len()-j-2] == 1;
+                        image[y+j][x+i] = self.bmp[i+1][j+1] == 1;
                     }
                 }
             },
@@ -108,6 +129,11 @@ impl Tile {
                 }
             },
             (L, true) => {
+                for i in 0..self.bmp.len()-2 {
+                    for j in 0..self.bmp.len()-2 {
+                        image[y+self.bmp.len()-j-3][x+self.bmp.len()-i-3] = self.bmp[i+1][j+1] == 1;
+                    }
+                }
                 
             }
         }
@@ -149,7 +175,7 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
     for (c, n) in &graph {
         println!("{:010b} : {:?} ({})", c, n, c);
     }
-    let tile_id = get_corners(&graph)[0];
+    let mut tile_id = get_corners(&graph)[0];
     println!("Upper left corner: {}", tile_id);
     for b in &tiles.get(&tile_id).unwrap().all_borders() {
         println!("{:010b} ({})", b, b)
@@ -159,8 +185,8 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
         println!("{:?}", line.iter().map(|&c| if c==1 { '#' } else { '.' }).collect::<Vec<_>>());
     }
 
-    let size = (tiles.len() as f32).sqrt() as usize * 8;
-    let mut image = vec![vec![false; size]; size];
+    let size = (tiles.len() as f32).sqrt() as usize; // Number of tiles in sides
+    let mut image = vec![vec![false; size*8]; size*8];
 
     // Determine orientation of corner 
     let ul_borders = upper_left.all_borders();
@@ -213,88 +239,151 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
         }
     }
 
+    println!("\n0");
+    for i in 0..image.len() {
+        for j in 0..image[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+
     println!("next: {:?}", graph.get(&queue));
     // From here, place rest of image
     let mut j = 0;
     //let tile = upper_left.id;
     for n in 1..(size * size) {
+        println!("queue_right = {:010b} ({})", queue_right, queue_right);
+        println!("queue = {:010b} ({})", queue, queue);
         // For every next neighbour, place according to matching border,
         // padding removed. Whenever n % size == 0, go one step to the right.
         if n % size == 0 { 
             // place next tile right
+            println!("New column");
             j += 1; 
-            let tile_id = graph.get(&queue_right).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
+            tile_id = *graph.get(&queue_right).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
+            println!("Next tile: {}", tile_id);
+            for b in &tiles.get(&tile_id).unwrap().all_borders() {
+                println!("{:010b} ({})", b, b)
+            }
             let tile = tiles.get(&tile_id).unwrap();
+            for i in 1..tile.bmp.len() {
+                for j in 1..tile.bmp[1].len() {
+                    print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+                }
+                println!("");
+            }
             let borders = tile.all_borders();
             if borders[0] == queue {
                 // Rotate left
                 tile.print(&mut image, j, n % size, Rotation::L, false);
+                queue = tile.get_border(Rotation::L, true);
+                queue_right = tile.get_border(Rotation::D, false);
             }
             else if borders[1] == queue {
                 // Rotate left and flip
                 tile.print(&mut image, j, n % size, Rotation::L, true);
+                queue = tile.get_border(Rotation::L, false);
+                queue_right = tile.get_border(Rotation::U, false);
             }
             else if borders[2] == queue {
                 // Rotate right
                 tile.print(&mut image, j, n % size, Rotation::R, false);
+                queue = tile.get_border(Rotation::R, true);
+                queue_right = tile.get_border(Rotation::U, true);
             }
             else if borders[3] == queue {
                 // Rotate right and flip
                 tile.print(&mut image, j, n % size, Rotation::R, true);
+                queue = tile.get_border(Rotation::R, false);
+                queue_right = tile.get_border(Rotation::D, true);
             }
             else if borders[4] == queue {
                 // No reorientation
                 tile.print(&mut image, j, n % size, Rotation::U, false);
+                queue = tile.get_border(Rotation::D, true);
+                queue_right = tile.get_border(Rotation::R, true);
             } 
             else if borders[5] == queue {
                 // Flip U/D
                 tile.print(&mut image, j, n % size, Rotation::D, true);
+                queue = tile.get_border(Rotation::U, false);
+                queue_right = tile.get_border(Rotation::R, true);
             }
             else if borders[6] == queue {
                 // Flip L/R
                 tile.print(&mut image, j, n % size, Rotation::U, true);
+                queue = tile.get_border(Rotation::D, false);
+                queue_right = tile.get_border(Rotation::L, false);
             }
             else if borders[7] == queue {
                 // Rotate 180 degrees
                 tile.print(&mut image, j, n % size, Rotation::D, false);
+                queue = borders[1];
+                queue_right = borders[5];
             }
         } else {
-            let tile_id = graph.get(&queue).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
+            tile_id = *graph.get(&queue).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
+            println!("Next tile: {}", tile_id);
+            for b in &tiles.get(&tile_id).unwrap().all_borders() {
+                println!("{:010b} ({})", b, b)
+            }
             let tile = tiles.get(&tile_id).unwrap();
+            for i in 1..tile.bmp.len() {
+                for j in 1..tile.bmp[1].len() {
+                    print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+                }
+                println!("");
+            }
             let borders = tile.all_borders();
             
             if borders[0] == queue {
                 // No reorientation
                 tile.print(&mut image, j, n % size, Rotation::U, false);
+                queue = tile.get_border(Rotation::D, true);
             } 
             else if borders[1] == queue {
                 // Flip L/R
                 tile.print(&mut image, j, n % size, Rotation::U, true);
+                queue = tile.get_border(Rotation::D, false);
             }
             else if borders[2] == queue {
                 // Flip U/D
                 tile.print(&mut image, j, n % size, Rotation::D, true);
+                queue = tile.get_border(Rotation::U, false);
             }
             else if borders[3] == queue {
                 // Rotate 180 degrees
                 tile.print(&mut image, j, n % size, Rotation::D, false);
+                queue = tile.get_border(Rotation::U, true);
             }
             else if borders[4] == queue {
                 // Rotate right and flip
                 tile.print(&mut image, j, n % size, Rotation::R, true);
+                queue = tile.get_border(Rotation::R, false);
             }
             else if borders[5] == queue {
                 // Rotate right
                 tile.print(&mut image, j, n % size, Rotation::R, false);
+                queue = tile.get_border(Rotation::R, true);
             }
             else if borders[6] == queue {
                 // Rotate left
                 tile.print(&mut image, j, n % size, Rotation::L, false);
+                queue = tile.get_border(Rotation::L, true);
             }
             else if borders[7] == queue {
                 // Rotate left and flip
                 tile.print(&mut image, j, n % size, Rotation::L, true);
+                queue = tile.get_border(Rotation::L, false);
             }
+        }
+        
+        println!("\n{} ({}, {})", n, n%size, j);
+        for i in 0..image.len() {
+            for j in 0..image[0].len() {
+                print!("{}", if image[i][j] { '#' } else { '.' });
+            }
+            println!("");
         }
     }
     image
@@ -420,6 +509,417 @@ fn test_day20_search_monster() {
     assert_eq!(273, res.iter().flatten().filter(|x| **x).count());
 }
 
+
+#[test]
+fn test_day20_print_u() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::U, false);
+
+    let res = "\
+        #..#....\n\
+        ...##..#\n\
+        ###.#...\n\
+        #.##.###\n\
+        #...#.##\n\
+        #.#.#..#\n\
+        .#....#.\n\
+        ##...#.#\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nUp");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_uf() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::U, true);
+
+    let res = "\
+        ....#..#\n\
+        #..##...\n\
+        ...#.###\n\
+        ###.##.#\n\
+        ##.#...#\n\
+        #..#.#.#\n\
+        .#....#.\n\
+        #.#...##\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nUp flipped");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_r() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::R, false);
+
+
+    let res = "\
+        #.####.#\n\
+        ##...#..\n\
+        ..#.##..\n\
+        ....#.##\n\
+        ..##.##.\n\
+        #...#...\n\
+        .#.##...\n\
+        #.###.#.\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nRight");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_rf() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::R, true);
+
+    let res = "\
+        #.####.#\n\
+        ..#...##\n\
+        ..##.#..\n\
+        ##.#....\n\
+        .##.##..\n\
+        ...#...#\n\
+        ...##.#.\n\
+        .#.###.#\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nRight flipped");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_d() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::D, false);
+
+
+    let res = "\
+        #.#...##\n\
+        .#....#.\n\
+        #..#.#.#\n\
+        ##.#...#\n\
+        ###.##.#\n\
+        ...#.###\n\
+        #..##...\n\
+        ....#..#\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nDown");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_df() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::D, true);
+
+    let res = "\
+        ##...#.#\n\
+        .#....#.\n\
+        #.#.#..#\n\
+        #...#.##\n\
+        #.##.###\n\
+        ###.#...\n\
+        ...##..#\n\
+        #..#....\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+    
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nDown flipped");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_l() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::L, false);
+
+    let res = "\
+        .#.###.#\n\
+        ...##.#.\n\
+        ...#...#\n\
+        .##.##..\n\
+        ##.#....\n\
+        ..##.#..\n\
+        ..#...##\n\
+        #.####.#\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+    
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nLeft");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
+
+#[test]
+fn test_day20_print_lf() {
+    let inputs = parse_tiles("Tile 2311:\n\
+        ..##.#..#.\n\
+        ##..#.....\n\
+        #...##..#.\n\
+        ####.#...#\n\
+        ##.##.###.\n\
+        ##...#.###\n\
+        .#.#.#..##\n\
+        ..#....#..\n\
+        ###...#.#.\n\
+        ..###..###\n");
+    let tile = inputs.iter().next().unwrap().1;
+
+    let mut image = vec![vec![false; 8]; 8];
+    tile.print(&mut image, 0, 0, Rotation::L, true);
+
+    let res = "\
+        #.###.#.\n\
+        .#.##...\n\
+        #...#...\n\
+        ..##.##.\n\
+        ....#.##\n\
+        ..#.##..\n\
+        ##...#..\n\
+        #.####.#\n\
+        ".lines()
+        .map(|line| line.chars().map(|c| c == '#').collect::<Vec<_>>()).collect::<Vec<_>>();
+    
+    println!("\nOriginal");
+    for i in 1..tile.bmp.len()-1 {
+        for j in 1..tile.bmp[1].len()-1 {
+            print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
+        }
+        println!("");
+    }
+    println!("\nLeft flipped");
+    for i in 0..res.len() {
+        for j in 0..res[0].len() {
+            print!("{}", if image[i][j] { '#' } else { '.' });
+        }
+        if i == 3 { print!(" <-> "); } else { print!("     "); }
+        for j in 0..res[0].len() {
+            print!("{}", if res[i][j] { '#' } else { '.' });
+        }
+        println!("");
+    }
+    assert_eq!(image, res);
+}
 
 
 #[test]
@@ -650,7 +1150,7 @@ fn test_day20_part2() {
     for line in &res {
         println!("{:?}", line.iter().map(|&c| if c { '#' } else { '.' }).collect::<Vec<_>>());
     }
-    //assert_eq!(273, part2(&inputs));
+    assert_eq!(273, part2(&inputs));
 }
 
 #[test]
