@@ -32,7 +32,6 @@ enum Expression {
     Expression(Box<Self>, Operator, Box<Self>),
 }
 
-
 fn tokenize(inputs: &str) -> Vec<Token> {
     let mut number = String::new();
     let mut tokens = Vec::new();
