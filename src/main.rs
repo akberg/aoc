@@ -1,7 +1,5 @@
 #[macro_use] extern crate lazy_static;
-extern crate pest;
-#[macro_use]
-extern crate pest_derive;
+
 
 mod aoc;
 
@@ -20,3 +18,4 @@ fn main() {
     // println!("{} - in {:?}", aoc::day25::part2(&i2), pt_start.elapsed().unwrap());
     println!("Total duration: {:?}", start.elapsed().unwrap())
 }
+

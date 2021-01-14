@@ -45,16 +45,15 @@ impl Tile {
     // Get binary representation of all possible borders
     pub fn all_borders(&self) -> [u16; 8] {
         let mut ret = [0;8];
-        
         for i in 0..self.bmp.len() { // Clockwise (lower flipped is left to right)
-            ret[0] += (self.bmp[0][self.bmp.len()-i-1] as u16) << i;                    // upper
+            ret[0] += (self.bmp[0][self.bmp[0].len()-i-1] as u16) << i;                    // upper
             ret[1] += (self.bmp[0][i] as u16) << i;                                     // upper flipped 
-            ret[2] += (self.bmp[self.bmp.len()-1][self.bmp.len()-i-1] as u16) << i;     // lower
+            ret[2] += (self.bmp[self.bmp.len()-1][self.bmp[0].len()-i-1] as u16) << i;     // lower
             ret[3] += (self.bmp[self.bmp.len()-1][i] as u16) << i;                      // lower flipped
             ret[4] += (self.bmp[self.bmp.len()-i-1][0] as u16) << i;                    // left
             ret[5] += (self.bmp[i][0] as u16) << i;                                     // left flipped
-            ret[6] += (self.bmp[self.bmp.len()-i-1][self.bmp.len()-1] as u16) << i;     // right
-            ret[7] += (self.bmp[i][self.bmp.len()-1] as u16) << i;                      // right flipped
+            ret[6] += (self.bmp[self.bmp.len()-i-1][self.bmp[0].len()-1] as u16) << i;     // right
+            ret[7] += (self.bmp[i][self.bmp[0].len()-1] as u16) << i;                      // right flipped
         }
         ret
     }
@@ -172,18 +171,21 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
     // Arbirarily select first as upper left corner
     let graph = make_graph(tiles);
     let neighbours = map_neighbours(&graph);
-    for (c, n) in &graph {
-        println!("{:010b} : {:?} ({})", c, n, c);
-    }
+    // for (c, n) in &graph {
+    //     println!("{:010b} : {:?} ({})", c, n, c);
+    // }
     let mut tile_id = get_corners(&graph)[0];
+    let mut tile_top_id = tile_id;
+    let mut flip = false;
+    let mut flip_top = false;
     println!("Upper left corner: {}", tile_id);
     for b in &tiles.get(&tile_id).unwrap().all_borders() {
         println!("{:010b} ({})", b, b)
     }
     let upper_left = tiles.get(&tile_id).unwrap();
-    for line in &upper_left.bmp {
-        println!("{:?}", line.iter().map(|&c| if c==1 { '#' } else { '.' }).collect::<Vec<_>>());
-    }
+    // for line in &upper_left.bmp {
+    //     println!("{:?}", line.iter().map(|&c| if c==1 { '#' } else { '.' }).collect::<Vec<_>>());
+    // }
 
     let size = (tiles.len() as f32).sqrt() as usize; // Number of tiles in sides
     let mut image = vec![vec![false; size*8]; size*8];
@@ -203,39 +205,49 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
                     image[i][j] = upper_left.bmp[i+1][j+1] == 1;
                 }
             }
+            queue = upper_left.get_border(Rotation::D, false);
+            flip = false;
+            queue_right = upper_left.get_border(Rotation::R, false);
+            flip_top = false;
         } else {
             // Rotate right 90 degrees (R + U)
-            println!("Rotate right");
+            // println!("Rotate right");
             for i in 0..upper_left.bmp.len()-2 {
                 for j in 0..upper_left.bmp.len()-2 {
                     image[j][upper_left.bmp.len()-i-3] = upper_left.bmp[i+1][j+1] == 1;
                 }
             }
-            queue = ul_borders[7]; // right flipped
-            queue_right = ul_borders[0]; // up
+            queue = upper_left.get_border(Rotation::R, false); // right flipped
+            flip = false;
+            queue_right = upper_left.get_border(Rotation::U, false); // up
+            flip_top = false;
         }
     } else {
         // Necessarily left neighbour
         if graph.get(&ul_borders[2]).unwrap().len() > 1 {
             // Only flipping needed (L + D)
-            println!("Flip");
+            // println!("Flip");
             for i in 0..upper_left.bmp.len()-2 {
                 for j in 0..upper_left.bmp.len()-2 {
                     image[i][j] = upper_left.bmp[i+1][upper_left.bmp.len()-j-2] == 1;
                 }
             }
-            queue = ul_borders[3]; // down flipped
-            queue_right = ul_borders[4]; // left
+            queue = upper_left.get_border(Rotation::D, false); // right flipped
+            flip = true;
+            queue_right = upper_left.get_border(Rotation::L, false); // up
+            flip_top = true;
         } else {
             // Rotate right 180 degrees (L + U)
-            println!("Rotate 180 degrees");
+            // println!("Rotate 180 degrees");
             for i in 0..upper_left.bmp.len()-2 {
                 for j in 0..upper_left.bmp.len()-2 {
                     image[i][j] = upper_left.bmp[upper_left.bmp.len()-i-2][upper_left.bmp.len()-j-2] == 1;
                 }
             }
-            queue = ul_borders[1]; // up flipped
-            queue_right = ul_borders[5]; // left flipped
+            queue = upper_left.get_border(Rotation::U, false); // right flipped
+            flip = false;
+            queue_right = upper_left.get_border(Rotation::L, false); // up
+            flip_top = false;
         }
     }
 
@@ -260,66 +272,91 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
             // place next tile right
             println!("New column");
             j += 1; 
-            tile_id = *graph.get(&queue_right).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
+            tile_id = *graph.get(&queue_right).unwrap().iter().filter(|x| **x != tile_top_id).next().unwrap();
+            tile_top_id = tile_id;
             println!("Next tile: {}", tile_id);
             for b in &tiles.get(&tile_id).unwrap().all_borders() {
                 println!("{:010b} ({})", b, b)
             }
             let tile = tiles.get(&tile_id).unwrap();
-            for i in 1..tile.bmp.len() {
-                for j in 1..tile.bmp[1].len() {
+            for i in 0..tile.bmp.len() {
+                for j in 0..tile.bmp[1].len() {
                     print!("{}", if tile.bmp[i][j]==1 { '#' } else { '.' });
                 }
                 println!("");
             }
             let borders = tile.all_borders();
-            if borders[0] == queue {
+            if (borders[0] == queue_right && flip_top) || (borders[1] == queue_right && !flip_top) {
                 // Rotate left
                 tile.print(&mut image, j, n % size, Rotation::L, false);
-                queue = tile.get_border(Rotation::L, true);
-                queue_right = tile.get_border(Rotation::D, false);
-            }
-            else if borders[1] == queue {
-                // Rotate left and flip
-                tile.print(&mut image, j, n % size, Rotation::L, true);
                 queue = tile.get_border(Rotation::L, false);
-                queue_right = tile.get_border(Rotation::U, false);
+                flip = false;
+                queue_right = tile.get_border(Rotation::D, false);
+                flip_top = false;
+                println!("L queue(L)={} queue_right(D)={}", queue, queue_right);
             }
-            else if borders[2] == queue {
-                // Rotate right
-                tile.print(&mut image, j, n % size, Rotation::R, false);
-                queue = tile.get_border(Rotation::R, true);
-                queue_right = tile.get_border(Rotation::U, true);
-            }
-            else if borders[3] == queue {
+            else if (borders[0] == queue_right && !flip_top) || (borders[1] == queue_right && flip_top) {
                 // Rotate right and flip
                 tile.print(&mut image, j, n % size, Rotation::R, true);
                 queue = tile.get_border(Rotation::R, false);
-                queue_right = tile.get_border(Rotation::D, true);
+                flip = true;
+                queue_right = tile.get_border(Rotation::D, false);
+                flip_top = true;
+                println!("LF queue(LF)={} queue_right(UF)={}", queue, queue_right);
             }
-            else if borders[4] == queue {
+            else if (borders[2] == queue_right && !flip_top) || (borders[3] == queue_right && flip_top) {
+                // Rotate right
+                tile.print(&mut image, j, n % size, Rotation::R, false);
+                queue = tile.get_border(Rotation::R, false);
+                flip = false;
+                queue_right = tile.get_border(Rotation::U, false);
+                flip_top = false;
+                println!("R queue(R)={} queue_right(U)={}", queue, queue_right);
+            }
+            else if (borders[3] == queue_right && !flip_top) || (borders[2] == queue_right && flip_top) {
+                // Rotate left and flip
+                tile.print(&mut image, j, n % size, Rotation::L, true);
+                queue = tile.get_border(Rotation::L, false);
+                flip = true;
+                queue_right = tile.get_border(Rotation::U, false);
+                flip_top = true;
+                println!("RF queue(LF)={} queue_right(DF)={}", queue, queue_right);
+            }
+            else if (borders[4] == queue_right && !flip_top) || (borders[5] == queue_right && flip_top) {
                 // No reorientation
                 tile.print(&mut image, j, n % size, Rotation::U, false);
-                queue = tile.get_border(Rotation::D, true);
-                queue_right = tile.get_border(Rotation::R, true);
+                queue = tile.get_border(Rotation::D, false);
+                flip = false;
+                queue_right = tile.get_border(Rotation::R, false);
+                flip_top = false;
+                println!("U queue(D)={} queue_right(R)={}", queue, queue_right);
             } 
-            else if borders[5] == queue {
+            else if (borders[5] == queue_right && !flip_top) || (borders[4] == queue_right && flip_top) {
                 // Flip U/D
                 tile.print(&mut image, j, n % size, Rotation::D, true);
                 queue = tile.get_border(Rotation::U, false);
-                queue_right = tile.get_border(Rotation::R, true);
+                flip = true;
+                queue_right = tile.get_border(Rotation::R, false);
+                flip_top = true;
+                println!("DF queue(U)={} queue_right(RF)={}", queue, queue_right);
             }
-            else if borders[6] == queue {
+            else if (borders[6] == queue_right && !flip_top) || (borders[7] == queue_right && flip_top) {
                 // Flip L/R
                 tile.print(&mut image, j, n % size, Rotation::U, true);
                 queue = tile.get_border(Rotation::D, false);
+                flip = true;
                 queue_right = tile.get_border(Rotation::L, false);
+                flip_top = true;
+                println!("UF queue(D)={} queue_right(L)={}", queue, queue_right);
             }
-            else if borders[7] == queue {
+            else if (borders[7] == queue_right && !flip_top) || (borders[6] == queue_right && flip_top) {
                 // Rotate 180 degrees
                 tile.print(&mut image, j, n % size, Rotation::D, false);
-                queue = borders[1];
+                queue = tile.get_border(Rotation::U, false); //borders[0];
+                flip = false;
                 queue_right = borders[5];
+                flip_top = false;
+                println!("D queue(U)={} queue_right(L)={}", queue, queue_right);
             }
         } else {
             tile_id = *graph.get(&queue).unwrap().iter().filter(|x| **x != tile_id).next().unwrap();
@@ -336,45 +373,53 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
             }
             let borders = tile.all_borders();
             
-            if borders[0] == queue {
+            if (borders[0] == queue && flip) || (borders[1] == queue && !flip) {
                 // No reorientation
                 tile.print(&mut image, j, n % size, Rotation::U, false);
-                queue = tile.get_border(Rotation::D, true);
+                queue = tile.get_border(Rotation::D, false);
+                flip = false;
             } 
-            else if borders[1] == queue {
+            else if (borders[0] == queue && !flip) || (borders[1] == queue && flip) {
                 // Flip L/R
                 tile.print(&mut image, j, n % size, Rotation::U, true);
                 queue = tile.get_border(Rotation::D, false);
+                flip = true;
             }
-            else if borders[2] == queue {
+            else if (borders[2] == queue && flip) || (borders[3] == queue && !flip) {
                 // Flip U/D
                 tile.print(&mut image, j, n % size, Rotation::D, true);
                 queue = tile.get_border(Rotation::U, false);
+                flip = true;
             }
-            else if borders[3] == queue {
+            else if (borders[2] == queue && !flip) || (borders[3] == queue && flip) {
                 // Rotate 180 degrees
                 tile.print(&mut image, j, n % size, Rotation::D, false);
-                queue = tile.get_border(Rotation::U, true);
+                queue = tile.get_border(Rotation::U, false);
+                flip = false;
             }
-            else if borders[4] == queue {
+            else if (borders[4] == queue && flip) || (borders[5] == queue && !flip) {
                 // Rotate right and flip
                 tile.print(&mut image, j, n % size, Rotation::R, true);
                 queue = tile.get_border(Rotation::R, false);
+                flip = true;
             }
-            else if borders[5] == queue {
+            else if (borders[4] == queue && !flip) || (borders[5] == queue && flip) {
                 // Rotate right
                 tile.print(&mut image, j, n % size, Rotation::R, false);
-                queue = tile.get_border(Rotation::R, true);
+                queue = tile.get_border(Rotation::R, false);
+                flip = false;
             }
-            else if borders[6] == queue {
+            else if (borders[6] == queue && flip) || (borders[7] == queue && !flip) {
                 // Rotate left
                 tile.print(&mut image, j, n % size, Rotation::L, false);
-                queue = tile.get_border(Rotation::L, true);
+                queue = tile.get_border(Rotation::L, false);
+                flip = false;
             }
-            else if borders[7] == queue {
+            else if (borders[6] == queue && !flip) || (borders[7] == queue && flip) {
                 // Rotate left and flip
                 tile.print(&mut image, j, n % size, Rotation::L, true);
                 queue = tile.get_border(Rotation::L, false);
+                flip = true;
             }
         }
         
@@ -1154,7 +1199,7 @@ fn test_day20_part2() {
 }
 
 #[test]
-fn run_day20() {
+fn run_day20_run() {
     use std::time::SystemTime;
     let start = SystemTime::now();
     print!("Parsing input . . . ");
