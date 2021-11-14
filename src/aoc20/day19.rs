@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 #[allow(unused)]
 pub fn input() -> (Regex, Regex, String) {
-    let inputs = crate::aoc::input_raw(19);
+    let inputs = crate::aoc::input_raw(20, 19);
     let mut split = inputs.split("\n\n");
     let rules_str = split.next().unwrap();
     let re = parse_rules(rules_str);

@@ -26,7 +26,7 @@ impl FromStr for Action {
 
 #[allow(unused)]
 pub fn input() -> Vec<Action> {
-    let mut ret = crate::aoc::input_raw(12)
+    let mut ret = crate::aoc::input_raw(20, 12)
         .lines()
         .map(|a| a.parse::<Action>().unwrap())
         .collect::<Vec<Action>>();

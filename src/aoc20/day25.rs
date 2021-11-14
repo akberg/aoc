@@ -3,7 +3,7 @@ extern crate num;
 
 #[allow(unused)]
 pub fn input() -> (usize, usize) {
-    let i = crate::aoc::input(25);
+    let i = crate::aoc::input(20, 25);
     (
         i[0].parse().unwrap(),
         i[1].parse().unwrap()

@@ -6,7 +6,7 @@ type Deck = VecDeque<usize>;
 
 #[allow(unused)]
 pub fn input() -> (Deck, Deck) {
-    parse_input(&crate::aoc::input_raw(22))
+    parse_input(&crate::aoc::input_raw(20, 22))
 }
 
 fn parse_input(inputs: &str) -> (Deck, Deck) {

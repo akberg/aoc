@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 #[allow(unused)]
 pub fn input() -> String {
-    crate::aoc::input_raw(14)
+    crate::aoc::input_raw(20, 14)
         
 }
 

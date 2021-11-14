@@ -2,7 +2,7 @@
 use std::fs;
 #[allow(unused)]
 pub fn input() -> Vec<i32> {
-    let filename = format!("inputs/day1.txt");
+    let filename = format!("inputs/20/day1.txt");
     fs::read_to_string(filename)
         .iter()
         .map(|x| x.parse::<i32>()

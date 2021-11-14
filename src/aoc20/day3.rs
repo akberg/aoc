@@ -81,7 +81,7 @@ fn test_day3_part2() {
 
 #[test]
 fn run_day3() {
-    let ifile = super::input(3);
+    let ifile = crate::aoc::input(20, 3);
     println!("Parsing input . . .");
     let inputs = input(&ifile);
     println!("Day 3 part 1:");

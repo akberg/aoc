@@ -6,7 +6,7 @@ use std::num::ParseIntError;
 
 #[allow(unused)]
 pub fn input() -> String {
-    crate::aoc::input_raw(16)
+    crate::aoc::input_raw(20, 16)
 }
 
 fn parse_rules(inputs: &str) -> Result<HashMap<String, Vec<RangeInclusive<usize>>>, ParseIntError> {

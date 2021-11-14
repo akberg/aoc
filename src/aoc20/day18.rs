@@ -1,7 +1,7 @@
 
 #[allow(unused)]
 pub fn input() -> Vec<String> {
-    crate::aoc::input(18)
+    crate::aoc::input(20, 18)
 }
 
 #[derive(Debug, PartialEq, Copy, Clone)]

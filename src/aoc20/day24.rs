@@ -6,7 +6,7 @@ use std::collections::{HashSet, HashMap};
 
 #[allow(unused)]
 pub fn input() -> String {
-    crate::aoc::input_raw(24)
+    crate::aoc::input_raw(20, 24)
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]

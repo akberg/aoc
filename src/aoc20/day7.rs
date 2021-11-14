@@ -9,7 +9,7 @@ type BagMap = HashMap<String, HashSet<(String, usize)>>;
 pub fn input() -> (BagMap, BagMap) {
     let mut containers1 = HashMap::new();
     let mut containers2 = HashMap::new();
-    let ifile = crate::aoc::input_raw(7);
+    let ifile = crate::aoc::input_raw(20, 7);
     for line in ifile.lines() {
         parse_line(&mut containers1, &mut containers2, line);
     }

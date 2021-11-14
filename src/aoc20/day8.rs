@@ -19,7 +19,7 @@ impl FromStr for OpCode {
 
 #[allow(unused)]
 fn input() -> Vec<(OpCode, i32)> {
-    crate::aoc::input_raw(8)
+    crate::aoc::input_raw(20, 8)
         .lines()
         .map(|line| parse_line(line))
         .collect()

@@ -1,7 +1,7 @@
 
 #[allow(unused)]
 pub fn input() -> (i64, Vec<i64>) {
-    let inputs = crate::aoc::input(13);
+    let inputs = crate::aoc::input(20, 13);
     (
         inputs[0].parse::<i64>().unwrap(), 
         inputs[1].split(",").map(|c|c.parse::<i64>().unwrap_or(0)).collect::<Vec<_>>()

@@ -4,7 +4,7 @@ use std::cmp::min;
 
 #[allow(unused)]
 pub fn input() -> Vec<i64> {
-    let mut ret = crate::aoc::input_raw(10)
+    let mut ret = crate::aoc::input_raw(20, 10)
         .lines()
         .map(|i| i.parse::<i64>().unwrap())
         .collect::<Vec<i64>>();

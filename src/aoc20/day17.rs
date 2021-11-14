@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 
 #[allow(unused)]
 pub fn input() -> (HashSet<(i32, i32, i32)>, HashSet<(i32, i32, i32, i32)>) {
-    let inputs = crate::aoc::input_raw(17);
+    let inputs = crate::aoc::input_raw(20, 17);
     (
         parse_map(&inputs), 
         parse_map_4d(&inputs)

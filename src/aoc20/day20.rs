@@ -5,7 +5,7 @@ use std::collections::{HashMap, HashSet};
 
 #[allow(unused)]
 pub fn input() -> HashMap<usize, Tile> {
-    parse_tiles(&crate::aoc::input_raw(20))
+    parse_tiles(&crate::aoc::input_raw(20, 20))
 }
 
 fn parse_tiles(tiles: &str) -> HashMap<usize, Tile> {

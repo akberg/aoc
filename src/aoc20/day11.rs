@@ -16,7 +16,7 @@ impl From<char> for State {
 
 #[allow(unused)]
 pub fn input() -> Vec<Vec<State>> {
-    let mut ret = crate::aoc::input_raw(11)
+    let mut ret = crate::aoc::input_raw(20, 11)
         .lines()
         .map(|line| line
             .chars()

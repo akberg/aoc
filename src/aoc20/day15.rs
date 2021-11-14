@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 #[allow(unused)]
 pub fn input() -> Vec<usize> {
-    crate::aoc::input_raw(15)
+    crate::aoc::input_raw(20, 15)
         .split(",")
         .map(|n| n.parse::<usize>().unwrap())
         .collect()

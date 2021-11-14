@@ -9,7 +9,7 @@ pub fn input() -> (
     HashMap<String, usize>,
     HashMap<String, HashMap<String, usize>>,
 ) {
-    parse_input(&crate::aoc::input_raw(21))
+    parse_input(&crate::aoc::input_raw(20, 21))
 }
 
 

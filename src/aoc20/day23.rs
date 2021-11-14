@@ -4,11 +4,11 @@ use std::collections::VecDeque;
 #[allow(unused)]
 pub fn input() -> (VecDeque<u32>, Vec<usize>) {
     (
-    crate::aoc::input_raw(23)
+    crate::aoc::input_raw(20, 23)
         .chars()
         .map(|x| x.to_digit(10).unwrap() as u32)
         .collect(),
-    crate::aoc::input_raw(23)
+    crate::aoc::input_raw(20, 23)
         .chars()
         .map(|x| x.to_digit(10).unwrap() as usize)
         .collect()

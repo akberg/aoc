@@ -20,7 +20,7 @@ fn parse_input(inputs: &String) -> (usize, usize, char, String) {
 #[allow(unused)]
 pub fn input() -> Vec<(usize, usize, char, String)> {
     let mut inputs: Vec<(usize, usize, char, String)> = Vec::new();
-    for e in super::input(2).iter() {
+    for e in crate::aoc::input(20, 2).iter() {
         inputs.push(parse_input(&e));
     }
     inputs

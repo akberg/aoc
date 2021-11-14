@@ -1,7 +1,7 @@
 
 #[allow(unused)]
 pub fn input() -> Vec<i64> {
-    crate::aoc::input_raw(9)
+    crate::aoc::input_raw(20, 9)
         .lines()
         .map(|i| i.parse::<i64>().unwrap())
         .collect()

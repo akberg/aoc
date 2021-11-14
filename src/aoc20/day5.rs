@@ -54,7 +54,7 @@ BBFFBBFRLL")
 #[test]
 fn run_day5() {
     println!("Parsing input . . . ");
-    let mut inputs: Vec<usize> = super::input(5)
+    let mut inputs: Vec<usize> = crate::aoc::input(20, 5)
         .iter()
         .map(|line| row_col(&line[0..7]) * 8 + row_col(&line[7..]))
         .collect::<Vec<usize>>();
