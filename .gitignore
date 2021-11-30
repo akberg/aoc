@@ -1,2 +1,7 @@
 /target
 .vscode/
+
+*.o
+*.out
+*.bin
+
