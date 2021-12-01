@@ -174,7 +174,7 @@ fn test_day22_part2() {
 fn test_hashset() {
     let mut set = HashSet::new();
     let mut p1 = VecDeque::from(vec![1, 2, 3, 4]);
-    let mut p2 = VecDeque::from(vec![5, 6, 7, 8]);
+    let p2 = VecDeque::from(vec![5, 6, 7, 8]);
     set.insert((p1.clone(), p2.clone()));
     let x = p1.pop_back().unwrap();
     set.insert((p1.clone(), p2.clone()));

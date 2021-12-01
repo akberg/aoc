@@ -1,7 +1,7 @@
 extern crate regex;
 
 use regex::Regex;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 //use std::hash::Hash;
 
 #[allow(unused)]

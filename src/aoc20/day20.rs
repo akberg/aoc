@@ -170,31 +170,24 @@ fn get_corners(graph: &HashMap<u16, HashSet<usize>>) -> Vec<usize> {
 fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
     // Arbirarily select first as upper left corner
     let graph = make_graph(tiles);
-    let neighbours = map_neighbours(&graph);
-    // for (c, n) in &graph {
-    //     println!("{:010b} : {:?} ({})", c, n, c);
-    // }
+    //let neighbours = map_neighbours(&graph);
     let mut tile_id = get_corners(&graph)[0];
     let mut tile_top_id = tile_id;
-    let mut flip = false;
-    let mut flip_top = false;
+    let mut flip;
+    let mut flip_top;
     println!("Upper left corner: {}", tile_id);
     for b in &tiles.get(&tile_id).unwrap().all_borders() {
         println!("{:010b} ({})", b, b)
     }
     let upper_left = tiles.get(&tile_id).unwrap();
-    // for line in &upper_left.bmp {
-    //     println!("{:?}", line.iter().map(|&c| if c==1 { '#' } else { '.' }).collect::<Vec<_>>());
-    // }
 
     let size = (tiles.len() as f32).sqrt() as usize; // Number of tiles in sides
     let mut image = vec![vec![false; size*8]; size*8];
 
     // Determine orientation of corner 
     let ul_borders = upper_left.all_borders();
-    let mut queue = ul_borders[2];  // Next matching border
-    let mut queue_right = ul_borders[6];
-    let mut dir = Rotation::D;      // Matching direction
+    let mut queue;      // Next matching border
+    let mut queue_right;
     if graph.get(&ul_borders[6]).unwrap().len() > 1 {
         // Has right neighbour
         if graph.get(&ul_borders[2]).unwrap().len() > 1 {
@@ -436,6 +429,7 @@ fn assemble_image(tiles: &HashMap<usize, Tile>) -> Vec<Vec<bool>> {
 
 // Return image with monsters removed
 fn search_monster(mut image: Vec<Vec<bool>>, rotation: usize) -> Vec<Vec<bool>> {
+    #[allow(non_snake_case)]
     let MONSTER_STR: &str = "                  # \n\
                          #    ##    ##    ###\n\
                          .#..#..#..#  #..#   "; // 20x3 (15x#)
@@ -446,22 +440,6 @@ fn search_monster(mut image: Vec<Vec<bool>>, rotation: usize) -> Vec<Vec<bool>> 
     let mut d = 0; // 0 for not found
     for y in 0..=image.len()-monster.len() {
         for x in 0..=image[0].len()-monster[0].len() {
-            // if y == 2 && x == 2 {
-            //     println!("---{}---", rotation);
-            //     for (i,_) in monster.iter().enumerate() {
-            //         for (j,_) in monster[i].iter().enumerate() {
-            //             print!("{}", if monster[i][j] { 'O' } else if image[y+i][x+j] {'#'} else {'.'});
-            //         }
-            //         println!("");
-            //     }
-            //     println!("-flipped-");
-            //     for (i,_) in monster.iter().enumerate() {
-            //         for (j,_) in monster[i].iter().enumerate() {
-            //             print!("{}", if monster[i][monster[0].len()-1-j] { 'O' } else if image[y+i][x+monster[0].len()-1-j] {'#'} else {'.'});
-            //         }
-            //         println!("");
-            //     }
-            // }
             // Scan for monster and erase if found
             // Straight
             if (d==0 || d==1) && 

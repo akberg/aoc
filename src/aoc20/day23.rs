@@ -56,6 +56,7 @@ struct LLNode {
     val: usize
 }
 
+#[allow(unused)]
 fn cup_game_print(game: &Vec<LLNode>) {
     let mut i = 0;
     for _ in 0..game.len() {
