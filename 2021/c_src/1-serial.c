@@ -12,22 +12,33 @@ void input(list_t *ret)
     ret->len = 0;
     ret->vals = (int *)malloc(sizeof(int) * 2000);
     int allocated_size = 2000;
-    FILE *fp = fopen("../inputs/21/day1.txt", "r");
-    
-    int res = 1;
-    while (res) {
-        char *line;
-        res = getline(&line, 0, fp);
-        if (res) {
-            /* Read line to array */
-            ret->vals[ret->len++] = atoi(line);
-        }
+
+    FILE *fp = fopen("../inputs/day1.txt", "r");
+
+    if (fp == NULL) {
+        perror("fopen");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(stderr, "Opened file\n");
+
+    ssize_t res;
+    char *line = NULL;
+    size_t len = 0;
+    while ((res = getline(&line, &len, fp)) != -1) {
+        /* Read line to array */
+        ret->vals[ret->len++] = atoi(line);
+
         if (ret->len >= allocated_size) {
             /* Dynamic allocation of array size */
+            fprintf(stderr, "%d / %d full. Allocating more memory to input array\n", 
+                    ret->len, allocated_size);
             allocated_size *= 2;
-            ret->len = realloc(ret->len, allocated_size);
+            ret->vals = realloc(ret->vals, sizeof(int) * allocated_size);
+            
         }
     }
+    free(line);
+    fclose(fp);
 }
 
 int count_increasing_sums(const list_t *vals)
@@ -62,8 +73,12 @@ void main()
 {
     list_t depths;
     input(&depths);
-    int p1 = part1(&depths);
-    printf("Part 1: %d", p1);
-    int p2 = part2(&depths);
-    printf("Part 2: %d", p2);
+    int p1;
+    for (int i = 0; i < 1000; i++) {
+        p1 = part1(&depths);
+
+    }
+    printf("Part 1: %d\n", p1);
+    // int p2 = part2(&depths);
+    // printf("Part 2: %d\n", p2);
 }
