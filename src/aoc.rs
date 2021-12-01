@@ -1,10 +1,13 @@
 
 use std::fs;
+use std::io::{prelude::*, BufReader};
 
 pub fn input(year: i32, day: i32) -> Vec<String> {
-    input_raw(year, day)
-        .lines()
-        .map(|s| s.to_string())
+    let filename = format!("inputs/{}/day{}.txt", year, day);
+    let f = fs::File::open(filename).unwrap();
+    let f = BufReader::new(f);
+    f.lines()
+        .map(|s| s.unwrap())//to_string())
         .collect::<Vec<String>>()
 }
 
