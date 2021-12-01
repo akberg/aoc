@@ -2,7 +2,6 @@
 
 pub mod aoc;
 mod aoc20;
-mod aoc21;
 
 
 fn main() {
