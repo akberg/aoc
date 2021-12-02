@@ -1,6 +1,11 @@
 use std::fs;
 use std::io::{prelude::*, BufReader};
 
+pub fn input_file(day: i32) -> std::io::Result<fs::File> {
+    let filename = format!("inputs/day{}.txt", day);
+    fs::File::open(filename)
+}
+
 pub fn input(day: i32) -> Vec<String> {
     let filename = format!("inputs/day{}.txt", day);
     let f = fs::File::open(filename).unwrap();
