@@ -6,3 +6,9 @@
 *.out
 *.bin
 main
+main-serial
+main-pthread
+main-openmp
+main-cuda
+main-mpi
+
