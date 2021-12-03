@@ -104,7 +104,7 @@ fn test_day02_part2() {
     assert_eq!(part2(&inputs), 900);
 }
 
-
+#[allow(unused)]
 pub fn run() {
     use std::time::SystemTime;
     let start = SystemTime::now();
