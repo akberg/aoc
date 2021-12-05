@@ -18,7 +18,7 @@ impl BingoBoard {
     pub fn mark_number(&mut self, num: usize) -> bool {
         for m in 0..5 {
             for n in 0..5 {
-                if self.nums[m][n] == num {
+                if self.nums[m][n] == num {     // Could use Iterator::find
                     let ret = !self.mark[m][n];
                     self.mark[m][n] = true;
                     return ret
@@ -27,15 +27,9 @@ impl BingoBoard {
         }
         return false
     }
-    /**Check if a board has a bingo */
+    /**Check if a board has a bingo: All marked in any column or row */
     pub fn check_bingo(&self) -> bool {
-        for i in 0..5 {
-            // Check rows and columns
-            if (0..5).all(|j| self.mark[i][j]) || (0..5).all(|j| self.mark[j][i]) {
-                return true
-            }
-        }
-        return false
+        (0..5).any(|i| (0..5).all(|j| self.mark[i][j]) || (0..5).all(|j| self.mark[j][i]))
     }
 }
 
