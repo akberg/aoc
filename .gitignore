@@ -11,4 +11,4 @@ main-pthread
 main-openmp
 main-cuda
 main-mpi
-
+main-omp
