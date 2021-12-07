@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+/**Parse line descriptions into start and end point tuples */
 fn parse_line(line: &String) -> ((usize, usize), (usize, usize)) {
     let mut line = line.trim().split(" -> ");
     let mut start = line.next().unwrap().split(',');
@@ -19,9 +20,11 @@ pub fn input() -> Vec<((usize, usize), (usize, usize))> {
         .collect()
 }
 
+/**Apply lines one by one, counting tiles when they reach 2 */
 pub fn part1(inputs: &Vec<((usize, usize), (usize, usize))>) -> usize {
     let mut tiles = HashMap::new();
     let mut dangerous_tiles = 0;
+
     for i in inputs.iter().filter(|i| i.0.0 == i.1.0 || i.0.1 == i.1.1) {
 
         let (line, sel, vert) = if i.0.0 != i.1.0 { 
@@ -56,9 +59,15 @@ pub fn part1(inputs: &Vec<((usize, usize), (usize, usize))>) -> usize {
     dangerous_tiles
 }
 
+/**Same as part 1, but counts with diagonal lines instead
+ * of skipping them.
+ */
 pub fn part2(inputs: &Vec<((usize, usize), (usize, usize))>) -> usize {
     let mut tiles = HashMap::new();
     let mut dangerous_tiles = 0;
+
+    // Potential for parallelizing this loop, as long as values in
+    // tiles are locked when they are accessed.
     for i in inputs {
         let line = if i.0.1 == i.1.1 { 
             // Horizontal line

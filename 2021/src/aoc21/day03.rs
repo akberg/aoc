@@ -34,7 +34,7 @@ pub fn part1(inputs: &Vec<String>) -> u32 {
 
 /**
  * Determine "life support rating", the product of "oxygen generator rating" and
- * "CO2 scrubber rating". 
+ * "CO2 scrubber rating". These two calculations are put in parallel threads.
  * */
 pub fn part2(inputs: &Vec<String>) -> u32 {
     let width = inputs[0].len();  // bit width of diagnostic numbers
