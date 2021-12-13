@@ -9,6 +9,7 @@ dependencies = [
  "lazy_static",
  "rayon",
  "sliding_windows",
+ "text_io",
 ]
 
 [[package]]
@@ -149,3 +150,9 @@ name = "sliding_windows"
 version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a830e5d74dce35884bac85ecdc68c1ae96b9451918cc484f39340049c7a55f5e"
+
+[[package]]
+name = "text_io"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ee74b5019b48991b09803402aaf9e65a053b3993fe9d9c475ab67a395358ba76"
