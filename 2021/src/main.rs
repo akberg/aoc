@@ -1,9 +1,8 @@
-#[macro_use] extern crate lazy_static;
-#[macro_use] extern crate text_io;
+// #[macro_use] extern crate lazy_static;
 
 mod aoc21;
 pub mod aoc;
 
 fn main() {
-    aoc21::day14::run();
+    aoc21::day15::run();
 }
