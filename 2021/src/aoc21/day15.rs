@@ -29,9 +29,7 @@ pub fn dijkstra_shortest_path(weights: &Vec<Vec<i32>>) -> (i32, Vec<Vec<Option<(
     let height = height;
     let width = width;
 
-    let mut count = 0;
     while let Some(((y, x), _w)) = queue.pop_min() {
-        count += 1;
         /* Break when goal is reached */
         if (y, x) == (height-1, width-1) { break }
         for (dy, dx) in [(-1,0),(0,-1),(1,0),(0,1)] {
@@ -78,7 +76,8 @@ pub fn part1(inputs: &Vec<Vec<i32>>) -> i32 {
     dijkstra_shortest_path(inputs).0
 }
 
-/**Find the first step where all octopuses flash simultaneously */
+/// Inflate map to five timens the height and width, then finf the least risky
+/// path using Dijkstra
 pub fn part2(inputs: &Vec<Vec<i32>>) -> i32 {
     let weights = inflate(inputs, 5);
     dijkstra_shortest_path(&weights).0
