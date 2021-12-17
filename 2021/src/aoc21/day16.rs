@@ -129,14 +129,14 @@ pub fn input() -> String {
     parse_line(crate::aoc::input_raw(DAY).trim())
 }
 
-/// Dijkstra's shortest path to find least risky path
+/// Parse packet and return sum of version numbers
 pub fn part1(inputs: &str) -> u64 {
     let pkt = Packet::from_stream(&mut inputs.chars());
     eprintln!("{:?}", pkt);
     pkt.sum_version()
 }
 
-/**Find the first step where all octopuses flash simultaneously */
+/// Parse packet and compute its value
 pub fn part2(inputs: &str) -> u64 {
     Packet::compute(&Box::new(Packet::from_stream(&mut inputs.chars())))
 }

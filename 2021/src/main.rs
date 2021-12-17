@@ -4,5 +4,5 @@ mod aoc21;
 pub mod aoc;
 
 fn main() {
-    aoc21::day16::run();
+    aoc21::day17::run();
 }
