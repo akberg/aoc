@@ -1,5 +1,5 @@
 
-CFLAGS += -Wall
+CFLAGS += -Wall -I.
 DATE =$(shell date +%-d)
 
 OPT ?= 0
@@ -14,7 +14,7 @@ main-serial: $(DATE)-serial.c
 main-pthread: $(DATE)-pthread.c
 main-omp: $(DATE)-omp.c
 
-%.serial: %-serial.c
+%.serial: %-serial.c tlhash.c
 	gcc -O$(OPT) $(CFLAGS) -o main-serial $^
 
 %.pthread: %-pthread.c
