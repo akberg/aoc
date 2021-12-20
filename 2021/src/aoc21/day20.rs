@@ -1,7 +1,5 @@
 static DAY: i32 = 20;
 
-use std::collections::HashSet;
-
 pub fn input(test: bool) -> ([u8;512], Vec<Vec<u16>>) {
     let f = if test { crate::aoc::_test_input_raw(DAY, 0) } else { crate::aoc::input_raw(DAY) };
     let mut f = f.lines();
@@ -48,13 +46,13 @@ fn enhance(alg: &[u8;512], img: &Vec<Vec<u16>>) -> Vec<Vec<u16>> {
                 (temp[m+1][n  ] << 1) +
                 (temp[m+1][n+1] << 0);
             assert!(idx < 512);
-            // println!("({},{}): alg[{}] = {}", m as isize-2, n as isize-2, idx, alg[idx as usize]);
             out[m-1][n-1] = alg[idx as usize] as u16;
         }
     }
     out
 }
 
+#[allow(unused)]
 fn print_img(img: &Vec<Vec<u16>>) {
     for i in 0..img.len(){
         for j in 0..img[0].len() {
@@ -64,14 +62,10 @@ fn print_img(img: &Vec<Vec<u16>>) {
     }
 }
 
-/// 
 pub fn part1(inputs: &([u8;512], Vec<Vec<u16>>)) -> u64 {
     let img = inputs.1.clone();
-    print_img(&img);
     let img = enhance(&inputs.0, &img);
-    print_img(&img);
     let img = enhance(&inputs.0, &img);
-    print_img(&img);
     img.iter()
     .map(
         |row| row.iter().map(|&x| x as u64).sum::<u64>()
@@ -82,17 +76,14 @@ pub fn part1(inputs: &([u8;512], Vec<Vec<u16>>)) -> u64 {
 
 pub fn part2(inputs: &([u8;512], Vec<Vec<u16>>)) -> u64 {
     let mut img = inputs.1.clone();
-    print_img(&img);
     for i in 0..50 {
         img = enhance(&inputs.0, &img);
-        print_img(&img);
     }
     img.iter()
     .map(
         |row| row.iter().map(|&x| x as u64).sum::<u64>()
     )
     .sum::<u64>()
-    // 4968 too low
 }
 
 /* TESTS */
