@@ -1,8 +1,4 @@
-// Player 1 starting position: 4
-// Player 2 starting position: 8
 static DAY: i32 = 21;
-
-use itertools::Itertools;
 
 pub fn input(test: bool) -> (usize, usize) {
     let f = if test { crate::aoc::_test_input(DAY, 0) } else { crate::aoc::input(DAY) };
@@ -78,7 +74,6 @@ pub fn part1(inputs: &(usize, usize)) -> usize {
 
 
 pub fn part2(inputs: &(usize, usize)) -> usize {
-    
     // 10 pos, 10 pos, 21 pt, 21 pt
     let mut multiverse = vec![vec![vec![vec![vec![Option::<(usize,usize)>::None;21];21];10];10]; 2];
     let (w1, w2) = dirac_dice(inputs.0, inputs.1, 0, 0, &mut multiverse, 0);

@@ -42,7 +42,7 @@ pub fn _test_input_raw(day: i32, test: i32) -> String {
 }
 
 #[allow(unused)]
-fn print_img<T: std::fmt::Display>(img: &Vec<Vec<T>>) {
+pub fn print_img<T: std::fmt::Display>(img: &Vec<Vec<T>>) {
     for i in 0..img.len(){
         for j in 0..img[0].len() {
             print!("{}", img[i][j]);

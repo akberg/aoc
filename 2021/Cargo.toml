@@ -13,3 +13,7 @@ priority-queue = "*"
 nalgebra-glm = "*"
 itertools = "*"
 sscanf = "*"
+fasthash = "*"
+
+[profile.release]
+debug = true

@@ -16,7 +16,8 @@ pub fn part1(depths: &Vec<u32>) -> u32 {
     depths.iter()
         .enumerate()
         .skip(1)
-        .filter(|(i, _)| depths[*i] > depths[i-1]).count() as u32
+        .filter(|(i, _)| depths[*i] > depths[i-1])
+        .count() as u32
 }
 
 /**
