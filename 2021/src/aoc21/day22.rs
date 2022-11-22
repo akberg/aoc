@@ -1,6 +1,5 @@
 static DAY: i32 = 22;
 
-use itertools::Itertools;
 use std::ops::RangeInclusive;
 
 #[derive(Copy, Clone, PartialEq)]
@@ -25,7 +24,7 @@ pub fn input(test: i32) -> Vec<Instr> {
 }
 
 fn parse_line(line: Result<String, std::io::Error>) -> Instr {
-    let mut line = line.unwrap();
+    let line = line.unwrap();
     let mut line = line.split_ascii_whitespace();
     let state = match line.next().unwrap() {
         "on" => State::On,

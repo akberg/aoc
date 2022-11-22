@@ -38,7 +38,7 @@ pub fn part1(inputs: &((isize, isize), (isize, isize))) -> isize {
 
 /// TODO
 pub fn part2(inputs: &((isize, isize), (isize, isize))) -> isize {
-    fn sum_to(n: isize) -> isize { n * (n + 1) / 2 }
+    //fn sum_to(n: isize) -> isize { n * (n + 1) / 2 }
     fn sum_from_to(n0: isize, n1 :isize) -> isize { (isize::pow(n1,2) + n1 - isize::pow(n0,2) - n0) / 2 }
 
     let mut count = 0;

@@ -18,6 +18,10 @@ pub fn part1(inputs: &Vec<Vec<char>>) -> usize {
     let mut map = inputs.clone();
     let (m, n) = (map.len(), map[0].len());
     for i in 0.. {
+        print!("\x1B[2J\x1B[1;1H");
+        crate::aoc::print_img(&map);
+        #[allow(deprecated)]
+        std::thread::sleep_ms(200);
         let mut changed = false;
         let mut buf1 = vec![vec!['.';map[0].len()];map.len()];
         let mut buf2 = vec![vec!['.';map[0].len()];map.len()];
