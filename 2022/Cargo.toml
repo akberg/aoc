@@ -7,13 +7,13 @@ edition = "2018"
 
 [dependencies]
 # lazy_static = "*"
-rayon = "*"
-sliding_windows = "*"
-priority-queue = "*"
-nalgebra-glm = "*"
-itertools = "*"
-sscanf = "*"
-fasthash = "*"
+# rayon = "*"
+# sliding_windows = "*"
+# priority-queue = "*"
+# nalgebra-glm = "*"
+# itertools = "*"
+# sscanf = "*"
+# fasthash = "*"
 
 [profile.release]
 debug = true

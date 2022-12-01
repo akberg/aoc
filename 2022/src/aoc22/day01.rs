@@ -1,32 +1,51 @@
 
-pub fn input() -> Vec<u32> {
+pub fn input() -> Vec<Vec<u32>> {
     crate::aoc::input_raw(1)
-        .lines()
-        .map(|x| x.parse::<u32>().unwrap())
+        .split("\n\n")
+        .map(|ls|{
+            ls.lines()
+            .filter(|&s| s.trim() != "")
+            .map(|x| x.parse::<u32>().unwrap())
+            .collect()}
+        )
         .collect()
 }
 
 
-/// TODO: part 1
-pub fn part1(_: &Vec<u32>) -> u32 {
-    0
+/// Largest sum, O(n)
+pub fn part1(inputs: &Vec<Vec<u32>>) -> u32 {
+    inputs.iter().map(|ls| ls.iter().sum::<u32>()).max().unwrap_or(0)
 }
 
-/// TODO: part 2
-pub fn part2(_: &Vec<u32>) -> u32 {
-    0
+/// Sum, sort, sum 3 largest
+pub fn part2(inputs: &Vec<Vec<u32>>) -> u32 {
+    let mut sums = inputs.iter().map(|ls| ls.iter().sum::<u32>()).collect::<Vec<_>>();
+    sums.sort_by(|a,b| b.cmp(a));
+    sums.iter().take(3).sum::<_>()
 }
 
 #[test]
 fn test_day01_part1() {
-    let inputs = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
-    assert_eq!(part1(&inputs), 7);
+    let inputs = vec![
+        vec![1000, 2000, 3000],
+        vec![4000],
+        vec![5000, 6000],
+        vec![7000, 8000, 9000],
+        vec![10000]
+    ];
+    assert_eq!(part1(&inputs), 24000);
 }
 
 #[test]
 fn test_day01_part2() {
-    let inputs = vec![199, 200, 208, 210, 200, 207, 240, 269, 260, 263];
-    assert_eq!(part2(&inputs), 5);
+    let inputs = vec![
+        vec![1000, 2000, 3000],
+        vec![4000],
+        vec![5000, 6000],
+        vec![7000, 8000, 9000],
+        vec![10000]
+    ];
+    assert_eq!(part2(&inputs), 45000);
 }
 
 #[allow(unused)]
