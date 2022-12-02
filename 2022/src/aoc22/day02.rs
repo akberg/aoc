@@ -89,11 +89,11 @@ pub fn run() {
     let inputs = input();
     println!("{:?}", start.elapsed().unwrap());
     let pt_start = SystemTime::now();
-    print!("Day 1 part 1: ");
+    print!("Day 2 part 1: ");
     println!("{}", part1(&inputs));
     println!("Took {:?}", pt_start.elapsed().unwrap());
     let pt_start = SystemTime::now();
-    print!("Day 1 part 2: ");
+    print!("Day 2 part 2: ");
     println!("{}", part2(&inputs));
     println!("Took {:?}", pt_start.elapsed().unwrap());
     println!("Total time: {:?}", start.elapsed().unwrap());
