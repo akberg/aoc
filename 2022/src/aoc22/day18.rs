@@ -1,29 +1,29 @@
 static DAY: usize = 18;
 
-pub fn input() -> Vec<u32> {
+pub fn input() -> String {
     crate::aoc::input_raw(1)
-        .lines()
-        .map(|ls| ls.parse::<_>().unwrap())
-        .collect()
+        //.lines()
+        //.map(|ls| ls.parse::<_>().unwrap())
+        //.collect()
 }
 
-pub fn part1(inputs: &Vec<u32>) -> u32 {
+pub fn part1(inputs: &str) -> u32 {
     todo!();
     0
 }
 
-pub fn part2(inputs: &Vec<u32>) -> u32 {
+pub fn part2(inputs: &str) -> u32 {
     todo!();
     0
 }
 
 #[test]
-fn test_day01_part1() {
+fn test_day18_part1() {
     // TODO
 }
 
 #[test]
-fn test_day01_part2() {
+fn test_day18_part2() {
     // TODO
 }
 

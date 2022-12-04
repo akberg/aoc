@@ -1,34 +1,35 @@
 # $1 - day
 # $2 - year
 function init_day {
+    echo "args " $1 " " $2
     printf -v day "%02d" $1
     echo "create file " src/aoc$2/day$day.rs
     echo "static DAY: usize = $day;" > src/aoc$2/day$day.rs
     echo "
-pub fn input() -> Vec<u32> {
+pub fn input() -> String {
     crate::aoc::input_raw(1)
-        .lines()
-        .map(|ls| ls.parse::<_>().unwrap())
-        .collect()
+        //.lines()
+        //.map(|ls| ls.parse::<_>().unwrap())
+        //.collect()
 }
 
-pub fn part1(inputs: &Vec<u32>) -> u32 {
+pub fn part1(inputs: &str) -> u32 {
     todo!();
     0
 }
 
-pub fn part2(inputs: &Vec<u32>) -> u32 {
+pub fn part2(inputs: &str) -> u32 {
     todo!();
     0
 }
 
 #[test]
-fn test_day01_part1() {
+fn test_day$1_part1() {
     // TODO
 }
 
 #[test]
-fn test_day01_part2() {
+fn test_day$1_part2() {
     // TODO
 }
 
@@ -60,15 +61,17 @@ if [ -z $1 ]; then
     exit 1
 fi
 year=$1
-day=$2
-if [ -z $day ]; then
+first_day=$2
+if [ -z $first_day ]; then
     day=1
 fi
-echo "year is $year first day is $day"
+echo "year is $year first day is $first_day"
 
-for i in {3..25}
+for i in {1..25}
 do
-    init_day $i 22
+    if [[ $i -ge $first_day ]]; then
+        init_day $i $year
+    fi
 done
 
 echo "
@@ -127,4 +130,4 @@ pub mod day23;
 pub mod day24;
 pub mod day25;
 
-" > src/aoc22.rs
+" > src/aoc$year.rs
