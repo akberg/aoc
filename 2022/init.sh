@@ -7,7 +7,7 @@ function init_day {
     echo "static DAY: usize = $day;" > src/aoc$2/day$day.rs
     echo "
 pub fn input() -> String {
-    crate::aoc::input_raw(1)
+    crate::aoc::input_raw($1)
         //.lines()
         //.map(|ls| ls.parse::<_>().unwrap())
         //.collect()

@@ -1,7 +1,7 @@
 static DAY: usize = 09;
 
 pub fn input() -> String {
-    crate::aoc::input_raw(1)
+    crate::aoc::input_raw(9)
         //.lines()
         //.map(|ls| ls.parse::<_>().unwrap())
         //.collect()
