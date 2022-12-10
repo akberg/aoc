@@ -69,8 +69,6 @@ pub fn part2(inputs: &str) -> usize {
     let mut fs = fs.values().collect::<Vec<_>>();
     fs.sort();
     let goal = 30000000 - (70000000 - fs[fs.len()-1]);
-    println!("needs {}", goal);
-    fs.iter().for_each(|e|println!("{}", e));
     **fs.iter().find(|&&&e|e>=goal).unwrap()
 }
 

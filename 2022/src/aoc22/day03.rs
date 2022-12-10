@@ -2,10 +2,6 @@ static DAY: usize = 03;
 
 pub fn input() -> String {
     crate::aoc::input_raw(DAY as i32)
-        // .lines()
-        // .map(|line| line.split_at(line.len()/2))
-        // //.map(|ls| ls.parse::<_>().unwrap())
-        // .collect()
 }
 
 fn parse_line(line: &str) -> Vec<u32> {
