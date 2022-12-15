@@ -12,7 +12,7 @@ chrono = "*"
 # sliding_windows = "*"
 # priority-queue = "*"
 # nalgebra-glm = "*"
-# itertools = "*"
+itertools = "*"
 sscanf = "*"
 # fasthash = "*"
 
