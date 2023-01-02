@@ -1,14 +1,9 @@
-use std::{fmt::Debug, collections::{BinaryHeap, VecDeque}, thread::sleep_ms};
-
-use colored::Colorize;
+use std::{fmt::Debug, collections::VecDeque, thread::sleep_ms};
 
 static DAY: usize = 24;
 
 pub fn input() -> String {
     crate::aoc::input_raw(24)
-        //.lines()
-        //.map(|ls| ls.parse::<_>().unwrap())
-        //.collect()
 }
 #[derive(Copy, Clone, PartialEq, Eq)]
 enum Tile {
@@ -72,7 +67,6 @@ struct ScoredPos {
 }
 impl Ord for ScoredPos {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        let dist_max = self.end.0.abs_diff(self.start.0) + self.end.1.abs_diff(self.start.1);
         let self_dist = self.start.0.abs_diff(self.pos.0) + self.start.1.abs_diff(self.pos.1);
         let other_dist = other.start.0.abs_diff(other.pos.0) + other.start.1.abs_diff(other.pos.1);
         (usize::MAX/2 - self.time - self_dist).cmp(&(usize::MAX/2 - other.time - other_dist))
@@ -85,42 +79,12 @@ initial_time: usize,
 start: (usize, usize),
 end: (usize, usize)) -> usize {
 
-    let h = initial_map.len();
-    let w = initial_map[0].len();
     let mut queue = VecDeque::new();
-    // let mut queue = BinaryHeap::new();
-    // queue.push(ScoredPos { pos: start, time: 0, steps: 0, start, end});
     queue.push_back(ScoredPos { pos: start, time: initial_time, steps: 0, start, end});
 
-    let mut i = 0;
-    // while let Some(mut current) = queue.pop() {
+    let mut _i = 0;
     while let Some(mut current) = queue.pop_front() {
-        i+=1;
         let (x, y) = current.pos;
-        // if i % 10000 == 0 {
-        //     // sleep_ms(50);
-        //     (0..64).for_each(|_|{ println!("");});
-        //     println!("{}", queue.len());
-        //     println!("{} {} ({}/{})=> {} {}", x, y, current.steps, current.time, end.0, end.1);
-        //     let map = evolved_map(&initial_map, current.time);
-        //     for y_ in 0..h {
-        //         for x_ in 0..w {
-        //             if x_==x && y_==y {
-        //                 print!("{}", format!("A").green().bold());
-        //             }
-        //             else if queue.iter().any(|s| s.pos == (x_,y_)) {
-        //                 print!("{}", format!("o").red());
-        //             }
-        //             else {
-        //                 print!("{:?}", map[y_][x_]);
-
-        //             }
-        //         }
-        //         println!("");
-        //     }
-        //     println!("");
-
-        // }
 
         // Return number of steps if end is reached
         if x == end.0 && y == end.1 {
@@ -183,14 +147,14 @@ fn init(inputs: &str) -> (Vec<Vec<Tile>>, (usize, usize), (usize, usize)) {
     let posy = 0;
     let posx = (&initial_map[0]).into_iter()
         .enumerate()
-        .find(|&(i, &c)| c==Tile::Open)
+        .find(|&(_, &c)| c==Tile::Open)
         .unwrap().0;
     let endy = initial_map.len()-1;
     let endx = initial_map.iter()
         .last().unwrap()
         .into_iter()
         .enumerate()
-        .find(|(i, c)| **c==Tile::Open)
+        .find(|(_, c)| **c==Tile::Open)
         .unwrap().0;
     (initial_map, (posx, posy), (endx, endy))
 }
