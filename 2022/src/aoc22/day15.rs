@@ -51,20 +51,42 @@ pub fn part1(inputs: &Vec<(isize, isize, isize, isize)>) -> usize {
     target_row.len()
 }
 
+/// Find the one cell in a 4M x 4M grid that is not covered by a sensor.
+/// - Input set is not very large (33 lines)
+/// - If one cell is covered by a sensor, then use the sensor's area to skip
+///   other cells that are then known to be covered. Reduces the loop to
+///   2-4 checks per line.
 pub fn part2(inputs: &Vec<(isize, isize, isize, isize)>) -> isize {
+    let target: isize = if inputs.len() > 15 { 4_000_000 } else { 20 }; // Test case
     let inputs = inputs.iter()
     .map(|(sx,sy,bx,by)| (*sx,*sy, (bx-sx).abs() + (by-sy).abs()))
     .collect::<Vec<_>>();
-    let target = if inputs.len() > 15 { 4_000_000 } else { 20 }; // Test case
 
-    for x in 0..target {
-        for y in 0..target {
-            if inputs.iter().all(|(sx,sy,d)| (x-sx).abs() + (y-sy).abs() > *d) {
+    for y in 0..target {
+        let mut x = 0;
+        if y % 10_000 == 0 { println!("y: {}", y); }
+        while x < target {
+            let mut m = false;
+            for (sx, sy, d) in &inputs {
+                if (x-sx).abs() + (y-sy).abs() <= *d {
+                    if x < *sx {
+                        // println!("{} {} skip {}", x, sx, 2 * (x-sx).abs());
+                        x += 2 * (x-sx).abs();
+                    }
+                    else {
+                        // println!("{} {} skip {}", x, sx, d - ((x-sx).abs() + (y-sy).abs()) + 1);
+                        x += d - ((x-sx).abs() + (y-sy).abs()) + 1;
+                    }
+                    m = true;
+                }
+            }
+            if !m {
+                println!("return {} {}", x, y);
                 return x * 4_000_000 + y;
             }
         }
     }
-    0
+    0 // Not found
 }
 
 #[test]
