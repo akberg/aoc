@@ -1,3 +1,6 @@
+
+#![feature(int_abs_diff)]
+#![feature(int_roundings)]
 mod aoc22;
 pub mod aoc;
 
