@@ -49,9 +49,9 @@ fn mul(c: Cell) -> u32 {
 }
 
 pub fn input(test: i32) -> Vec<Vec<Cell>> {
-    let lines = match test { 
+    let lines = match test {
         0 => crate::aoc::_test_input(DAY, 0),
-        _ => crate::aoc::input(DAY) 
+        _ => crate::aoc::input(DAY)
     }.iter().skip(2).map(|line| line.chars().filter_map(to_cell).collect::<Vec<_>>()).collect::<Vec<_>>();
     vec![
         vec![lines[1][0], lines[0][0]],
@@ -74,9 +74,9 @@ fn tower_of_hanoi_ish(cave: Graph, depth: u32, memo: &mut HashMap<Graph, u32, fa
     }
     use Cell::*;
     /* Check end state */
-    if cave.a.iter().all(|&x|x==A) && cave.ai == 4 
-    && cave.b.iter().all(|&x|x==B) && cave.bi == 4 
-    && cave.c.iter().all(|&x|x==C) && cave.ci == 4 
+    if cave.a.iter().all(|&x|x==A) && cave.ai == 4
+    && cave.b.iter().all(|&x|x==B) && cave.bi == 4
+    && cave.c.iter().all(|&x|x==C) && cave.ci == 4
     && cave.d.iter().all(|&x|x==D) && cave.di == 4  {
         eprintln!("d={}  {:?}", depth, cave);
         eprintln!("Solution with cost = {}", cave.e);
@@ -269,7 +269,7 @@ fn tower_of_hanoi_ish(cave: Graph, depth: u32, memo: &mut HashMap<Graph, u32, fa
         }
 
         if cave.a.iter().all(|&x| x == A || x == HallFree) && cave.ai < 4 {
-            
+
             if cave.a0 == A && cave.aa == HallFree {
                 let cost = cave.depth - cave.ai as u32 + 1;
                 let mut v = cave.a.clone(); let vi = cave.ai + 1;
@@ -569,6 +569,13 @@ pub fn part1(_inputs: &Vec<Vec<Cell>>) -> u32 {
     11516
 }
 
+/// # # # # # # # # # # # #
+/// # 0 1 2 3 4 5 6 7 8 9 #
+/// # # a # e # i # m # # #
+///   # b # f # j # n #
+///   # c # g # k # o #
+///   # d # h # l # p #
+///   # # # # # # # # #
 
 pub fn part2(inputs: &Vec<Vec<Cell>>) -> u32 {
     let cave = Graph {

@@ -1,7 +1,5 @@
 static DAY: i32 = 22;
 
-use std::collections::HashMap;
-
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum State { On, Off }
 impl Default for State {
