@@ -14,14 +14,14 @@ main-serial: $(DATE)-serial.c
 main-pthread: $(DATE)-pthread.c
 main-omp: $(DATE)-omp.c
 
-%.serial: %-serial.c tlhash.c
-	gcc -O$(OPT) $(CFLAGS) -o main-serial $^
+%.serial: %.cpp tlhash.c
+	g++ -O$(OPT) $(CFLAGS) -o main-serial $^
 
 %.pthread: %-pthread.c
-	gcc -o$(OPT) $(CFLAGS) -o main-pthread $^ -lpthread
+	g++ -o$(OPT) $(CFLAGS) -o main-pthread $^ -lpthread
 
 %.omp: %-omp.c
-	gcc -o$(OPT) $(CFLAGS) -o main-omp $^ -fopenmp
+	g++ -o$(OPT) $(CFLAGS) -o main-omp $^ -fopenmp
 
 run: main-serial
 	-time ./main-serial
