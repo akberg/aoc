@@ -12,3 +12,4 @@ main-openmp
 main-cuda
 main-mpi
 main-omp
+Cargo.lock
