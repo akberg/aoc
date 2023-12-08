@@ -17,6 +17,7 @@ sscanf = "*"
 # fasthash = "*"
 colored = "*"
 regex = "*"
+gcd = "*"
 
 [profile.release]
 debug = true
