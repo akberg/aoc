@@ -26,12 +26,12 @@ pub fn part2(inputs: &str) -> u32 {
 }
 
 #[test]
-fn test_day$1_part1() {
+fn test_20${year}_day${1}_part1() {
     // TODO
 }
 
 #[test]
-fn test_day$1_part2() {
+fn test_20${year}_day${1}_part2() {
     // TODO
 }
 
