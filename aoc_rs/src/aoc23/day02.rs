@@ -57,11 +57,19 @@ pub fn part1(inputs: &Vec<Vec<Vec3>>) -> u32 {
 }
 
 pub fn part2(inputs: &Vec<Vec<Vec3>>) -> u32 {
-    0
+    inputs
+        .iter()
+        // Componentwise LE comparison, componentwise MUL of result
+        .map(|set| {
+            glm::comp_mul(&set.iter().fold(Vec3::new(0, 0, 0), |acc, c| {
+                Vec3::new(acc.x.max(c.x), acc.y.max(c.y), acc.z.max(c.z))
+            }))
+        })
+        .sum::<i32>() as u32
 }
 
 #[test]
-fn test_day2_part1() {
+fn test_2023_day2_part1() {
     let inputs = parse_input(String::from(
         "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
     Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
@@ -73,8 +81,15 @@ fn test_day2_part1() {
 }
 
 #[test]
-fn test_day2_part2() {
-    // TODO
+fn test_2023_day2_part2() {
+    let inputs = parse_input(String::from(
+        "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+        Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
+        Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
+        Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
+        Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+    ));
+    assert_eq!(part2(&inputs), 2286);
 }
 
 // #[test]
