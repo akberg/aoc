@@ -8,6 +8,10 @@ pub fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
 }
 
+/// (Solved) Sort two input lists and sum the difference between elements at
+/// each index.
+///
+/// Input: String with each line containing one element from each list.
 pub fn part1(inputs: &str) -> Int {
     let (l, r) = inputs
         .lines()
@@ -33,6 +37,8 @@ pub fn part1(inputs: &str) -> Int {
     (0..l.len()).map(|idx| (l[idx] - r[idx]).abs()).sum::<_>()
 }
 
+/// (Solved) For each element in the first list, multiply its value with the
+/// number of occurences in the second list. Sum the result.
 pub fn part2(inputs: &str) -> Int {
     let (entries, map) = inputs
         .lines()

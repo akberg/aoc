@@ -5,11 +5,12 @@ static DAY: usize = 03;
 
 pub fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
-    //.lines()
-    //.map(|ls| ls.parse::<_>().unwrap())
-    //.collect()
 }
 
+/// (Solved, 15min) Find all occurences of uncorrupted `mul` instructions in a
+/// corrupted program, multiply their arguments and sum the results.
+///
+/// Input: One string (a program)
 pub fn part1(inputs: &str) -> i64 {
     // Match mul(a, b) where a and b a 1-3 digit integers.
     let re = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
@@ -21,6 +22,8 @@ pub fn part1(inputs: &str) -> i64 {
         .sum::<_>()
 }
 
+/// (Solved, 15min) Extends from part 1 by adding occurences of `do()` to
+/// include mul instructions, and `don't()` to ignore mul instructions.
 pub fn part2(inputs: &str) -> i64 {
     let re = Regex::new(
         r"(?<mul>mul\((?<a>\d{1,3}),(?<b>\d{1,3})\))|(?<open>do\(\))|(?<close>don't\(\))",

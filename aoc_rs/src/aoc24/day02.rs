@@ -26,6 +26,9 @@ fn is_report_safe(report: &&Vec<i64>) -> bool {
     r.clone().all_equal() && r.all(|(_, diff)| diff)
 }
 
+/// (Solved) Count the number of "safe" reports, see `is_report_safe`.
+///
+/// Input: Each line a report -- A list of numbers (called levels).
 pub fn part1(inputs: &Vec<Vec<i64>>) -> i64 {
     inputs
         .iter()
@@ -34,6 +37,8 @@ pub fn part1(inputs: &Vec<Vec<i64>>) -> i64 {
         .count() as i64
 }
 
+/// (Solved) Count the number of "safe" reports, see `is_report_safe`, with the
+/// ability to remove one number (one level) in order to make it safe.
 pub fn part2(inputs: &Vec<Vec<i64>>) -> i64 {
     inputs
         .iter()
