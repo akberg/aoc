@@ -73,7 +73,7 @@ pub fn part1(inputs: &str) -> u32 {
                     i - m - width + 1,
                     i - m - width - 1,
                 ] {
-                    if let Some(ch) = symbols.get(&p) {
+                    if let Some(_ch) = symbols.get(&p) {
                         map[(p / width) as usize][(p % width) as usize].1 = true;
                         for m in 0..=mag {
                             map[(i / width) as usize][(i % width - m) as usize].1 = true;
@@ -193,7 +193,7 @@ pub fn part2(inputs: &str) -> u32 {
     });
     let ret = symbols
         .into_iter()
-        .filter_map(|(p, (count, scale, idx0, idx1))| if count == 2 { Some(scale) } else { None })
+        .filter_map(|(_p, (count, scale, _idx0, _idx1))| if count == 2 { Some(scale) } else { None })
         .sum::<i32>() as u32;
     // debug
     for y in 0..map.len() {

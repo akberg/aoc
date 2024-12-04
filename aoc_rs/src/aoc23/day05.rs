@@ -112,7 +112,7 @@ pub fn part2(inputs: &str) -> u64 {
                                                          // // println!("{} humidity elements: {:?}", mapping.len(), mapping);
     mapping = map_seeds(&mut mapping, &maps[6]); // humid-loc
                                                          // // println!("{} location elements: {:?}", mapping.len(), mapping);
-    mapping.iter().map(|(loc, range)| *loc).min().unwrap()
+    mapping.iter().map(|(loc, _range)| *loc).min().unwrap()
 
     // for (start, range) in seeds.iter().tuples() {
     // }

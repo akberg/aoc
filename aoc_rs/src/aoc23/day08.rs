@@ -45,7 +45,7 @@ fn find_zs(
     target: Target
 ) -> u64 {
     let mut node = graph.get(root).unwrap();
-    let found = 0;
+    let _found = 0;
     for i in 0.. {
         let step = i % instr.len();
         let next = if instr[step] == 'L' { node.0 } else { node.1 };

@@ -1,7 +1,3 @@
-use std::sync::Arc;
-
-use itertools::Itertools;
-
 static DAY: usize = 04;
 
 fn parse_line(line: &str) -> (Vec<u32>, Vec<u32>, usize) {

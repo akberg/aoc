@@ -1,7 +1,5 @@
 static DAY: usize = 02;
 
-use std::iter::Map;
-
 use glm::IVec3 as Vec3;
 use nalgebra_glm as glm;
 

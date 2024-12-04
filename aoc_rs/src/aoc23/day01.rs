@@ -25,7 +25,7 @@ fn text_to_digit(line: &str) -> Vec<u32> {
         regex::Regex::new(r"^((one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))")
             .unwrap();
     let mut ret = vec![];
-    let mut first_re_hit = 0;
+
     for i in 0..line.len() {
         println!("{}", &line[i..]);
         if let Some(d) = line.chars().nth(i).unwrap().to_digit(10) {
@@ -33,7 +33,7 @@ fn text_to_digit(line: &str) -> Vec<u32> {
         }
         let m = re.find(&line[i..]);
         if let Some(caps) = m {
-            first_re_hit = caps.start() + 1;
+            let first_re_hit = caps.start() + 1;
             ret.push(match caps.as_str() {
                 "one" => 1,
                 "two" => 2,

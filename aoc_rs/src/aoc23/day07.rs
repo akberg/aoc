@@ -1,5 +1,3 @@
-use std::cmp::Ordering;
-
 use itertools::Itertools;
 
 static DAY: usize = 07;
@@ -11,19 +9,6 @@ pub fn input() -> String {
     //.collect()
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
-enum Rank {
-    High(u32),
-    OnePair(u32),
-    TwoPair(u32, u32),
-    ThreeOAK(u32),
-    FullHouse(u32),
-    FourOAK(u32),
-    FiveOAK(u32),
-}
-// impl Rank {
-//     pub fn from(count: i32) -> Self
-// }
 
 fn card_val_part1(c: char) -> usize {
     if let Some(x) = c.to_digit(10) {
@@ -39,6 +24,7 @@ fn card_val_part1(c: char) -> usize {
         };
     }
 }
+
 fn card_val_part2(c: char) -> usize {
     if let Some(x) = c.to_digit(10) {
         x as usize
@@ -54,8 +40,9 @@ fn card_val_part2(c: char) -> usize {
     }
 }
 
-/// A simplified poker game (simpler rules, but more difficult because of
-/// different rules). Struggled for a while because of a forgotten full house.
+/// (Solved) A simplified poker game (simpler rules, but more difficult because
+/// of different rules). Struggled for a while because of a forgotten full
+/// house.
 pub fn part1(inputs: &str) -> u32 {
     let mut games = inputs
         .lines()
@@ -109,8 +96,8 @@ pub fn part1(inputs: &str) -> u32 {
         .sum::<u32>()
 }
 
-/// J is now Jokaer instead of Jack -- it's worth 1, but can masquerade as any
-/// card to increase a rank.
+/// (Solved) J is now Jokaer instead of Jack -- it's worth 1, but can
+/// masquerade as any card to increase a rank.
 pub fn part2(inputs: &str) -> u32 {
     let mut games = inputs
         .lines()
