@@ -5,9 +5,6 @@ use regex;
 
 pub fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
-    //.lines()
-    //.map(|ls| ls.parse::<_>().unwrap())
-    //.collect()
 }
 
 pub fn part1(inputs: &str) -> u32 {
@@ -66,6 +63,7 @@ pub fn part2(inputs: &str) -> u32 {
         .sum::<u32>()
 }
 
+#[allow(unused)]
 const TEST_INPUT: &'static str = "1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
