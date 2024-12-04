@@ -56,6 +56,7 @@ fn map_seed(seed: u64, maps: &Vec<Vec<(u64, u64, u64)>>) -> u64 {
     mapping
 }
 
+/// (Solved)
 pub fn part1(inputs: &str) -> u64 {
     let (seeds, maps) = parse_maps(inputs);
     // maps.into_iter().for_each(|c| println!("{:?}", c));
@@ -99,17 +100,17 @@ pub fn part2(inputs: &str) -> u64 {
     // // println!("{} seed elements: {:?}", seeds.len(), seeds);
     let mut mapping = map_seeds(&mut seeds, &maps[0]); // seed-soil
                                                        // // println!("{} soil elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[1]); // soil-fert
+    mapping = map_seeds(&mut mapping, &maps[1]); // soil-fert
                                                          // // println!("{} fertilizer elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[2]); // fert-water
+    mapping = map_seeds(&mut mapping, &maps[2]); // fert-water
                                                          // // println!("{} water elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[3]); // water-light
+    mapping = map_seeds(&mut mapping, &maps[3]); // water-light
                                                          // // println!("{} light elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[4]); // light-temp
+    mapping = map_seeds(&mut mapping, &maps[4]); // light-temp
                                                          // // println!("{} temperature elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[5]); // temp-humid
+    mapping = map_seeds(&mut mapping, &maps[5]); // temp-humid
                                                          // // println!("{} humidity elements: {:?}", mapping.len(), mapping);
-    let mut mapping = map_seeds(&mut mapping, &maps[6]); // humid-loc
+    mapping = map_seeds(&mut mapping, &maps[6]); // humid-loc
                                                          // // println!("{} location elements: {:?}", mapping.len(), mapping);
     mapping.iter().map(|(loc, range)| *loc).min().unwrap()
 
@@ -122,6 +123,7 @@ pub fn part2(inputs: &str) -> u64 {
     //     .min()
     //     .unwrap()
 }
+// 105230362 too high
 
 #[test]
 fn test_day5_part1() {
