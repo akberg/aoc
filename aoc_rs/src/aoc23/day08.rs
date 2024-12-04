@@ -4,7 +4,7 @@ use super::YEAR;
 static DAY: usize = 08;
 
 pub fn input() -> String {
-    crate::aoc::input_raw(super::YEAR, DAY)
+    crate::aoc::input_raw(YEAR, DAY)
 }
 
 pub fn part1(inputs: &str) -> u32 {
@@ -45,7 +45,7 @@ fn find_zs(
     target: Target
 ) -> u64 {
     let mut node = graph.get(root).unwrap();
-    let mut found = 0;
+    let found = 0;
     for i in 0.. {
         let step = i % instr.len();
         let next = if instr[step] == 'L' { node.0 } else { node.1 };
