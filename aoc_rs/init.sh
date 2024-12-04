@@ -15,14 +15,12 @@ pub fn input() -> String {
         //.collect()
 }
 
-pub fn part1(inputs: &str) -> u32 {
+pub fn part1(_inputs: &str) -> u32 {
     todo!();
-    0
 }
 
-pub fn part2(inputs: &str) -> u32 {
+pub fn part2(_inputs: &str) -> u32 {
     todo!();
-    0
 }
 
 #[test]
