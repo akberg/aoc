@@ -4,7 +4,7 @@ static DAY: usize = 01;
 use regex;
 
 pub fn input() -> String {
-    crate::aoc::input_raw(super::YEAR, DAY)
+    crate::aoc::input_raw(YEAR, DAY)
     //.lines()
     //.map(|ls| ls.parse::<_>().unwrap())
     //.collect()
