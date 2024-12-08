@@ -8,18 +8,18 @@ function init_day {
 "use super::YEAR;
 static DAY: usize = $day;
 
-pub fn input() -> String {
+fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
         //.lines()
         //.map(|ls| ls.parse::<_>().unwrap())
         //.collect()
 }
 
-pub fn part1(_inputs: &str) -> u32 {
+fn part1(_inputs: &str) -> u32 {
     todo!();
 }
 
-pub fn part2(_inputs: &str) -> u32 {
+fn part2(_inputs: &str) -> u32 {
     todo!();
 }
 
