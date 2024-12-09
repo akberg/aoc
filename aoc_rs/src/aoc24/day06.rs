@@ -88,7 +88,6 @@ fn track_guard(map: &mut Vec<Vec<char>>) -> bool {
         }
     }
 
-    let mut clk = 0;
     loop {
         // Store footprint.
         visited
@@ -130,22 +129,13 @@ fn track_guard(map: &mut Vec<Vec<char>>) -> bool {
             pos = nxt;
         }
         // Check if a loop is closed.
-        // println!("{} {}", map[pos.y][pos.x], direction.get_char());
         if visited
             .get(&pos)
             .and_then(|e| Some((*e).contains(&direction)))
             .unwrap_or(false)
         {
-            // println!("{:?} {:?}", direction, visited.get(&pos));
             return true;
         }
-
-        // if clk % 1000 == 0 {
-        //     println!("Steps: {}", clk);
-        //     // print_img(&map);
-        //     // std::thread::sleep(std::time::Duration::from_millis(50));
-        // }
-        // clk += 1;
     }
 }
 
