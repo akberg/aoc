@@ -1,5 +1,3 @@
-use std::path::Display;
-
 use super::YEAR;
 static DAY: usize = 09;
 
@@ -17,12 +15,6 @@ impl Entry {
         match self {
             Entry::Free(_) => None,
             Entry::Alloc(i, _) => Some(*i),
-        }
-    }
-    pub fn get_size(&self) -> usize {
-        match self {
-            Entry::Free(s) => *s,
-            Entry::Alloc(_i, s) => *s,
         }
     }
 }
