@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 chrono = "*"
 lazy_static = "*"
+memoize = "*"
 # rayon = "*"
 # sliding_windows = "*"
 # priority-queue = "*"
