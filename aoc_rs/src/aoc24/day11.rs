@@ -1,4 +1,5 @@
 use memoize::memoize;
+use rayon::prelude::*;
 
 use super::YEAR;
 static DAY: usize = 11;
@@ -48,8 +49,11 @@ fn part1(inputs: &Vec<usize>) -> usize {
 /// (Solved, 10min) Evolve an array of numbers following the same rules as before, for 75
 /// iterations. Initial solution returned vectors, which is nice for debugging logic, but consumes
 /// too much memory. It's really only the size of each subtree that matters in the end.
+///
+/// Added parallel iterator for a 20% speed-up. Allowing 1-2 more recursive levels to spawn
+/// additional thread gives another tiny increase, but not enough to account for messier code.
 fn part2(inputs: &Vec<usize>) -> usize {
-    inputs.iter().map(|&n| evolve(n, 75)).sum()
+    inputs.par_iter().map(|&n| evolve(n, 75)).sum()
 }
 
 #[test]
