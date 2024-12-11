@@ -220,9 +220,9 @@ pub fn run() {
     let inputs = input();
     println!("{:?}", start.elapsed().unwrap());
     let pt_start = SystemTime::now();
-    // let res = part1(&inputs);
-    // print!("{} Day {} part 1: ", YEAR, DAY);
-    // println!("{}", res);
+    let res = part1(&inputs);
+    print!("{} Day {} part 1: ", YEAR, DAY);
+    println!("{}", res);
     println!("Took {:?}", pt_start.elapsed().unwrap());
     let pt_start = SystemTime::now();
     let res = part2(&inputs);
