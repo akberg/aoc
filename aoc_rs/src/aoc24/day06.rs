@@ -46,13 +46,6 @@ impl Direction {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-enum Tile {
-    Obstacle,
-    Unvisited,
-    Visited(Direction),
-}
-
 pub fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
     //.lines()
