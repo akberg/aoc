@@ -1,12 +1,14 @@
 // #![feature(int_abs_diff)]
 // #![feature(int_roundings)]
 pub mod aoc;
+// mod aoc21;
+mod aoc22;
 mod aoc23;
 mod aoc24;
 
-static FIRST_YEAR: usize = 2023;
-static YEAR: usize = 2023;
-static RUNS: [[fn(); 25]; 2] = [aoc23::RUNS, aoc24::RUNS];
+static FIRST_YEAR: usize = 2022;
+static YEAR: usize = 2024;
+static RUNS: [[fn(); 25]; 3] = [aoc22::RUNS, aoc23::RUNS, aoc24::RUNS];
 
 use chrono::{self, Datelike};
 use std::env;
