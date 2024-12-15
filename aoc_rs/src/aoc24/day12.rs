@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use super::YEAR;
 static DAY: usize = 12;
@@ -9,7 +9,8 @@ struct Tile {
     i: usize,
 }
 
-/// Floodfill parsing of contiguous area in map.
+/// Floodfill parsing of contiguous area in map. Return a tuple of area and
+/// circumference of the filled area.
 fn floodfill(
     x: isize,
     y: isize,
@@ -25,7 +26,6 @@ fn floodfill(
     // Iterate neighbouring positions
     for pos in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)].iter() {
         if let Some(t) = map.get(pos) {
-            println!(" = {:?}", t);
             // Neighbour already visited, check if is border
             if *t != tile {
                 circ += 1;
@@ -70,6 +70,7 @@ fn part1(inputs: &str) -> usize {
     let mut area_circ = Vec::new();
     let mut tiles = Vec::new();
 
+    // Iterate input map, and launch floodfill for any unvisited tiles.
     for (y, line) in inputs.iter().enumerate() {
         for (x, &c) in line.iter().enumerate() {
             let (x, y) = (x as isize, y as isize);
@@ -85,7 +86,7 @@ fn part1(inputs: &str) -> usize {
     area_circ.into_iter().map(|(a, c)| a * c).sum::<usize>()
 }
 
-/// Now, instead of circumference, use the number of sides.
+/// (Solved, 1h) Now, instead of circumference, use the number of sides.
 fn part2(inputs: &str) -> usize {
     let mut map = HashMap::new();
     let mut i = 0;
@@ -111,8 +112,45 @@ fn part2(inputs: &str) -> usize {
             }
         }
     }
+    // Reduce circumference to number of sides by decreasing the circumference
+    // for each border tile which has a neighbour above or to the left of it.
+    for (&(x, y), tile) in map.iter() {
+        // Upper edge xx
+        //            oO
+        if map.get(&(x - 1, y)) == Some(tile)
+            && map.get(&(x, y - 1)) != Some(tile)
+            && map.get(&(x - 1, y - 1)) != Some(tile)
+        {
+            area_circ[tile.i].1 -= 1;
+        }
+        // Right edge ox
+        //            Ox
+        if map.get(&(x, y - 1)) == Some(tile)
+            && map.get(&(x + 1, y)) != Some(tile)
+            && map.get(&(x + 1, y - 1)) != Some(tile)
+        {
+            area_circ[tile.i].1 -= 1;
+        }
+        // Lower edge Oo
+        //            xx
+        if map.get(&(x + 1, y)) == Some(tile)
+            && map.get(&(x, y + 1)) != Some(tile)
+            && map.get(&(x + 1, y + 1)) != Some(tile)
+        {
+            area_circ[tile.i].1 -= 1;
+        }
+        //  Left edge xO
+        //            xo
+        if map.get(&(x, y + 1)) == Some(tile)
+            && map.get(&(x - 1, y)) != Some(tile)
+            && map.get(&(x - 1, y + 1)) != Some(tile)
+        {
+            area_circ[tile.i].1 -= 1;
+        }
+    }
     area_circ.into_iter().map(|(a, c)| a * c).sum::<usize>()
 }
+// 837032 too high
 
 #[test]
 fn test_2024_day12_part1() {
@@ -142,7 +180,28 @@ fn test_2024_day12_part1() {
 
 #[test]
 fn test_2024_day12_part2() {
-    // TODO
+    let test_inputs = "AAAA
+                       BBCD
+                       BBCC
+                       EEEC";
+    assert_eq!(part2(test_inputs), 80);
+    let test_inputs = "OOOOO
+                       OXOXO
+                       OOOOO
+                       OXOXO
+                       OOOOO";
+    assert_eq!(part2(test_inputs), 436);
+    let test_inputs = "RRRRIICCFF
+                       RRRRIICCCF
+                       VVRRRCCFFF
+                       VVRCCCJFFF
+                       VVVVCJJCFE
+                       VVIVCCJJEE
+                       VVIIICJJEE
+                       MIIIIIJJEE
+                       MIIISIJEEE
+                       MMMISSJEEE";
+    assert_eq!(part2(test_inputs), 1206);
 }
 
 #[allow(unused)]
