@@ -19,6 +19,7 @@ sscanf = "*"
 colored = "*"
 regex = "*"
 gcd = "*"
+image = "*"
 
 [profile.release]
 debug = true
