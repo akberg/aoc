@@ -1,6 +1,6 @@
 static DAY: usize = 13;
 
-use std::{str::{Chars}, fmt::Debug, cmp::Ordering};
+use std::{str::Chars, fmt::Debug, cmp::Ordering};
 
 pub fn input() -> String {
     crate::aoc::input_raw(super::YEAR, DAY)

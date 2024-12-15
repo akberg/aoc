@@ -49,8 +49,8 @@ pub fn input() -> Vec<Blueprint> {
 impl Blueprint {
     fn max_out(&self) -> usize {
         // Ratio of materials for composite robots
-        let obsidian_ratio = (self.obsidian.1 / self.obsidian.0);
-        let geode_ratio = (self.geode.1 / self.geode.0) as usize;
+        // let obsidian_ratio = (self.obsidian.1 / self.obsidian.0);
+        // let geode_ratio = (self.geode.1 / self.geode.0) as usize;
         let ore_max = self.ore.max(self.clay).max(self.obsidian.0).max(self.geode.0);
 
         let mut states = std::collections::VecDeque::from([State::new()]);

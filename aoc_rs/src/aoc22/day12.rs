@@ -1,3 +1,5 @@
+/// Keywords: BFS
+
 static DAY: usize = 12;
 
 pub fn input() -> String {
