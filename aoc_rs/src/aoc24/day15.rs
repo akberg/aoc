@@ -1,15 +1,19 @@
+use std::collections::HashSet;
+
 use itertools::Itertools;
 
 /// Keywords: Lanternfish, 6-2021, 2D Map, Directions, Movement
 use super::YEAR;
 static DAY: usize = 15;
+static LOGGING: bool = false;
 
 type Vec2 = nalgebra_glm::TVec2<usize>;
 
 fn vec2_index_get<T: Copy>(mat: &Vec<Vec<T>>, i: &Vec2) -> T {
     mat[i.y][i.x]
 }
-fn vec2_indexset<T: Copy>(mat: &mut Vec<Vec<T>>, i: &Vec2, obj: &T) {
+#[allow(unused)]
+fn vec2_index_set<T: Copy>(mat: &mut Vec<Vec<T>>, i: &Vec2, obj: &T) {
     mat[i.y][i.x] = *obj;
 }
 
@@ -22,6 +26,8 @@ enum MapTile {
     ObjRight,
 }
 
+/// Variations on Direction enum already used multiple times, should consider
+/// generalising it.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 enum Direction {
     Up = 0,
@@ -94,6 +100,7 @@ impl std::fmt::Display for Direction {
     }
 }
 
+/// Parse map specific for day 15.
 fn parse_map(map: &str) -> (Vec<Vec<MapTile>>, Vec2) {
     let mut pos = Vec2::new(0, 0);
     (
@@ -138,27 +145,10 @@ fn input() -> (Vec<Vec<MapTile>>, Vec<Direction>, Vec2) {
 }
 
 /// Run robot instructions, moving objects accordingly.
-fn run_robot(mut map: &mut Vec<Vec<MapTile>>, directions: &Vec<Direction>, mut pos: Vec2) {
-    // // Debug
-    // for y in 0..map.len() {
-    //     for x in 0..map[0].len() {
-    //         if pos == Vec2::new(x, y) {
-    //             print!("@");
-    //         }
-    //         else {
-    //             print!("{}", match map[y][x] {
-    //                 MapTile::Wall => "#",
-    //                 MapTile::Object => "O",
-    //                 MapTile::Free => ".",
-    //                 MapTile::ObjLeft => "[",
-    //                 MapTile::ObjRight => "]",
-    //             });
-    //         }
-    //     }
-    //     println!("");
-    // }
-    'directions: for d in directions {
-        // Debug
+fn run_robot(map: &mut Vec<Vec<MapTile>>, directions: &Vec<Direction>, mut pos: Vec2) {
+    // Debug
+    if LOGGING {
+        println!("Initial:");
         for y in 0..map.len() {
             for x in 0..map[0].len() {
                 if pos == Vec2::new(x, y) {
@@ -176,15 +166,23 @@ fn run_robot(mut map: &mut Vec<Vec<MapTile>>, directions: &Vec<Direction>, mut p
             }
             println!("");
         }
+    }
+    'directions: for (step, d) in directions.iter().enumerate() {
+        if LOGGING {
+            println!("({}) Direction: {:?}", step, d);
+        }
         let mut rows = Vec::new();
-        let mut heads = vec![pos];
+        // Use a set to avoid duplicating wide objects (causes overwrites in
+        // map update).
+        let mut heads = HashSet::from([pos]);
         let mut i = 0;
+
         while heads.len() > 0 {
             i += 1;
             if i > map[0].len() {
                 panic!("Detected possible loop");
             }
-            let mut heads_next = Vec::new();
+            let mut heads_next = HashSet::new();
 
             // Iterate all heads of cluster. Any walls hit will abort movement,
             // free space removes head from queue, as movement is possible.
@@ -197,22 +195,22 @@ fn run_robot(mut map: &mut Vec<Vec<MapTile>>, directions: &Vec<Direction>, mut p
                     // Object: Check next tile if it can be pushed, add to next
                     // head
                     MapTile::Object => {
-                        heads_next.push(d.delta(head, 1));
+                        heads_next.insert(d.delta(head, 1));
                     }
                     // Open space: Robot and any objects in front will move.
                     // Do not add to queue.
                     MapTile::Free => continue,
                     // Wide object: Also add matching half
                     MapTile::ObjLeft => {
-                        heads_next.push(d.delta(head, 1));
+                        heads_next.insert(d.delta(head, 1));
                         if *d == Direction::Up || *d == Direction::Down {
-                            heads_next.push(d.delta(&(head + Vec2::new(1,0)), 1));
+                            heads_next.insert(d.delta(&(head + Vec2::new(1,0)), 1));
                         }
                     }
                     MapTile::ObjRight => {
-                        heads_next.push(d.delta(head, 1));
+                        heads_next.insert(d.delta(head, 1));
                         if *d == Direction::Up || *d == Direction::Down {
-                            heads_next.push(d.delta(&(head - Vec2::new(1,0)), 1));
+                            heads_next.insert(d.delta(&(head - Vec2::new(1,0)), 1));
                         }
                     }
                 }
@@ -231,25 +229,52 @@ fn run_robot(mut map: &mut Vec<Vec<MapTile>>, directions: &Vec<Direction>, mut p
                 map[p.y][p.x] = MapTile::Free;
             }
         }
+        let prev_pos = pos;
         pos = d.delta(&pos, 1);
-    }
-    // Debug
-    for y in 0..map.len() {
-        for x in 0..map[0].len() {
-            if pos == Vec2::new(x, y) {
-                print!("@");
-            }
-            else {
-                print!("{}", match map[y][x] {
-                    MapTile::Wall => "#",
-                    MapTile::Object => "O",
-                    MapTile::Free => ".",
-                    MapTile::ObjLeft => "[",
-                    MapTile::ObjRight => "]",
-                });
+        // Debug
+        if LOGGING {
+            for y in 0..map.len() {
+                for x in 0..map[0].len() {
+                    if pos == Vec2::new(x, y) {
+                        print!("@");
+                    }
+                    else if prev_pos == Vec2::new(x, y) {
+                        print!("*");
+                    }
+                    else {
+                        print!("{}", match map[y][x] {
+                            MapTile::Wall => "#",
+                            MapTile::Object => "O",
+                            MapTile::Free => ".",
+                            MapTile::ObjLeft => "[",
+                            MapTile::ObjRight => "]",
+                        });
+                    }
+                }
+                println!("");
             }
         }
-        println!("");
+    }
+    // Debug
+    if LOGGING {
+        println!("Final:");
+        for y in 0..map.len() {
+            for x in 0..map[0].len() {
+                if pos == Vec2::new(x, y) {
+                    print!("@");
+                }
+                else {
+                    print!("{}", match map[y][x] {
+                        MapTile::Wall => "#",
+                        MapTile::Object => "O",
+                        MapTile::Free => ".",
+                        MapTile::ObjLeft => "[",
+                        MapTile::ObjRight => "]",
+                    });
+                }
+            }
+            println!("");
+        }
     }
 }
 
@@ -274,12 +299,13 @@ fn comp_gps(map: &Vec<Vec<MapTile>>) -> usize {
 /// blocked by a wall.
 fn part1(inputs: &(Vec<Vec<MapTile>>, Vec<Direction>, Vec2)) -> usize {
     let (mut map, directions, mut pos) = inputs.clone();
-
     run_robot(&mut map, &directions, pos);
     // Compute result, sum of 100y+x for each object.
     comp_gps(&map)
 }
 
+/// (Solved, 1h) Repeat part 1, but widen map, adding partial overlaps as
+/// additional rules.
 fn part2(inputs: &(Vec<Vec<MapTile>>, Vec<Direction>, Vec2)) -> usize {
     let (map1, directions, mut pos) = inputs.clone();
     // Translate to extended map
@@ -309,7 +335,6 @@ fn part2(inputs: &(Vec<Vec<MapTile>>, Vec<Direction>, Vec2)) -> usize {
     run_robot(&mut map, &directions, pos);
     comp_gps(&map)
 }
-// 1114033 too low
 
 #[test]
 fn test_2024_day15_part1() {
