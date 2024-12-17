@@ -20,6 +20,8 @@ colored = "*"
 regex = "*"
 gcd = "*"
 image = "*"
+enum-primitive-derive = "*"
+num-traits = "*"
 
 [profile.release]
 debug = true
