@@ -1,5 +1,10 @@
 // #![feature(int_abs_diff)]
 // #![feature(int_roundings)]
+#[macro_use]
+extern crate enum_primitive_derive;
+extern crate num_traits;
+
+
 pub mod aoc;
 // mod aoc21;
 mod aoc22;
