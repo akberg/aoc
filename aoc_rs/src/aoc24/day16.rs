@@ -114,11 +114,20 @@ fn input() -> (HashSet<Vec2>, Vec2, Vec2, usize, usize) {
     parse_map(&inputs)
 }
 
-fn backtrack_path(links: &HashMap<State, State>, start: State, end: State, path: &mut Vec<State>) {
+fn backtrack_path(
+    links: &HashMap<State, Vec<State>>,
+    start: State,
+    end: State,
+    path: &mut Vec<State>,
+) {
     if end != start {
-        let prev = links[&end];
-        path.push(prev);
-        backtrack_path(links, start, prev, path);
+        let prev_v = &links[&end];
+        for prev in prev_v {
+            if !path.contains(prev) {
+                path.push(*prev);
+                backtrack_path(links, start, *prev, path);
+            }
+        }
     }
 }
 
@@ -127,7 +136,9 @@ fn shortest_path(
     start_position: Vec2,
     end_position: Vec2,
 ) -> Vec<(usize, Vec<State>)> {
-    let mut links = HashMap::new();
+    // For tracking multiple paths, make map value a vector, storing every
+    // previous state with an equally short path.
+    let mut links: HashMap<State, Vec<State>> = HashMap::new();
 
     let start_state = State {
         position: start_position,
@@ -136,20 +147,23 @@ fn shortest_path(
 
     let mut best_length = None;
     let mut paths = Vec::new();
-    // Dist map holds a position/rotation state and its cost. Non-existing entry means MAX cost.
+    // Dist map holds a position/rotation state and its cost. Non-existing
+    // entry means MAX cost.
     let mut dist = HashMap::new();
     dist.insert(start_state, 0);
 
     // Queue holds states to be visited, using cost for priority.
     let mut queue = BinaryHeap::new();
-    queue.push(QueueElement { cost: 0, state: start_state });
+    queue.push(QueueElement {
+        cost: 0,
+        state: start_state,
+    });
 
-    while let Some(QueueElement {
-        cost,
-        state: State { position, rotation },
-    }) = queue.pop()
-    {
+    while let Some(QueueElement { cost, state }) = queue.pop() {
+        let position = state.position;
+        let rotation = state.rotation;
         println!("p={:?} r={:?} c={}", position, rotation, cost);
+
         if position == end_position {
             // Found shortest path. Store the length
             //return Some(cost);
@@ -158,11 +172,10 @@ fn shortest_path(
             }
             // For each shortest path (there may be multiple), backtrace path.
             if Some(cost) == best_length {
-                let mut path = Vec::from([State { position, rotation }]);
-                backtrack_path(&links, start_state, State { position, rotation }, &mut path);
+                let mut path = Vec::from([state]);
+                backtrack_path(&links, start_state, state, &mut path);
                 println!("New shortest path ({}): {:?}", path.len(), path);
                 paths.push((cost, path));
-
             }
             continue;
         }
@@ -176,65 +189,76 @@ fn shortest_path(
         if map.contains(&next_state.position) {
             let prev_cost = dist.entry(next_state).or_insert(usize::MAX);
             if next_cost < *prev_cost {
-                links.insert(next_state, State { position, rotation });
+                // Path through current state is shorter than other paths to
+                // next state.
+                links.insert(next_state, Vec::from([state]));
                 *prev_cost = next_cost;
                 queue.push(QueueElement {
                     cost: next_cost,
                     state: next_state,
                 });
+            } else if next_cost == *prev_cost {
+                // Path through current state is as short as other shortest
+                // paths already found.
+                links.entry(next_state).or_default().push(state);
             }
         }
         // Check rotation left and right
         let next_cost = cost + 1000;
-        let next_state = State {
-            position,
-            rotation: rotation.rot_left(),
-        };
-        let prev_cost = dist.entry(next_state).or_insert(usize::MAX);
-        if next_cost < *prev_cost {
-            links.insert(next_state, State { position, rotation });
-            *prev_cost = next_cost;
-            queue.push(QueueElement {
-                cost: next_cost,
-                state: next_state,
-            });
-        }
-        let next_state = State {
-            position,
-            rotation: rotation.rot_right(),
-        };
-        let prev_cost = dist.entry(next_state).or_insert(usize::MAX);
-        if next_cost < *prev_cost {
-            links.insert(next_state, State { position, rotation });
-            *prev_cost = next_cost;
-            queue.push(QueueElement {
-                cost: next_cost,
-                state: next_state,
-            });
+        let next_states = [
+            State {
+                position,
+                rotation: rotation.rot_left(),
+            },
+            State {
+                position,
+                rotation: rotation.rot_right(),
+            },
+        ];
+        for next_state in next_states {
+            let prev_cost = dist.entry(next_state).or_insert(usize::MAX);
+
+            if next_cost < *prev_cost {
+                links.insert(next_state, Vec::from([state]));
+                *prev_cost = next_cost;
+                queue.push(QueueElement {
+                    cost: next_cost,
+                    state: next_state,
+                });
+            } else if next_cost == *prev_cost {
+                // Path through current state is as short as other shortest
+                // paths already found.
+                links.entry(next_state).or_default().push(state);
+            }
         }
     }
-    return paths
+    return paths;
 }
 
+/// (Solved) Find shortest path in a maze, considering the cost of turning.
 fn part1(inputs: &(HashSet<Vec2>, Vec2, Vec2, usize, usize)) -> usize {
     shortest_path(inputs.0.clone(), inputs.1, inputs.2)[0].0
 }
 
+/// (Solved, >1h) Find the number of tiles covered by all shortest paths.
 fn part2(inputs: &(HashSet<Vec2>, Vec2, Vec2, usize, usize)) -> usize {
     let paths = shortest_path(inputs.0.clone(), inputs.1, inputs.2);
+    // Remove duplicates
     let mut visits = HashSet::new();
-    paths.iter().for_each(|(_, path)| {path.iter().for_each(|state| {visits.insert(state.position);});});
-
+    paths.iter().for_each(|(_, path)| {
+        path.iter().for_each(|state| {
+            visits.insert(state.position);
+        });
+    });
+    // Display for debug and visualization.
     for y in 0..inputs.3 {
         for x in 0..inputs.4 {
             let pos = Vec2::new(x as i64, y as i64);
             if visits.contains(&pos) {
                 print!("O");
-            }
-            else if inputs.0.contains(&pos) {
+            } else if inputs.0.contains(&pos) {
                 print!(".");
-            }
-            else {
+            } else {
                 print!("#");
             }
         }
