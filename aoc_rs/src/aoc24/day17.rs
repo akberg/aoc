@@ -1,3 +1,4 @@
+use enum_primitive_derive::Primitive;
 use std::ops::Rem;
 
 /// Keywords: Instruction Set, 3-bit
@@ -169,6 +170,10 @@ fn test_2024_day17_part1_1() {
     let mut input = Computer::new(0, 0, 9, vec![2, 6]);
     input.run();
     assert_eq!(input.reg_b, 1);
+
+    let mut input = Computer::new(60589763, 5, 0, vec![2, 4]);
+    input.run();
+    assert_eq!(input.reg_b, 3);
 }
 #[test]
 fn test_2024_day17_part1_2() {
