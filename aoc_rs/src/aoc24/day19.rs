@@ -1,29 +1,83 @@
+use std::collections::HashMap;
+
 use super::YEAR;
 static DAY: usize = 19;
 
 fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
-        //.lines()
-        //.map(|ls| ls.parse::<_>().unwrap())
-        //.collect()
 }
 
-fn part1(_inputs: &str) -> u32 {
-    todo!();
+/// Return the number of matches. Manual memoization implementation, as #memoize
+/// could not handle the strings.
+fn can_match<'a>(
+    rules: &'a Vec<&'a str>,
+    line: &'a str,
+    mem: &mut HashMap<&'a str, usize>,
+) -> usize {
+    if let Some(&m) = mem.get(line) {
+        return m;
+    }
+    let m = rules
+        .iter()
+        .filter(|&r| line.starts_with(r))
+        .map(|&r| {
+            if r.len() == line.len() {
+                1
+            } else {
+                can_match(rules, &line[r.len()..], mem)
+            }
+        })
+        .sum();
+    mem.insert(line, m);
+    m
 }
 
-fn part2(_inputs: &str) -> u32 {
-    todo!();
+/// (Solved, 30min) DFS matching with memoization.
+fn part1(inputs: &str) -> usize {
+    let (rules, lines) = inputs.split_once("\n\n").unwrap();
+    let rules = rules.trim().split(", ").collect::<Vec<_>>();
+    let mut mem = HashMap::new();
+
+    lines
+        .trim()
+        .lines()
+        .filter(|line| can_match(&rules, line, &mut mem) > 0)
+        .count()
 }
+
+/// (Solved, 10min) Expand to return the number of different matches.
+fn part2(inputs: &str) -> usize {
+    let (rules, lines) = inputs.split_once("\n\n").unwrap();
+    let rules = rules.trim().split(", ").collect::<Vec<_>>();
+    let mut mem = HashMap::new();
+
+    lines
+        .trim()
+        .lines()
+        .map(|line| can_match(&rules, line, &mut mem))
+        .sum()
+}
+
+#[allow(unused)]
+static TEST_INPUT: &str = "r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb";
 
 #[test]
 fn test_2024_day19_part1() {
-    // TODO
+    assert_eq!(part1(TEST_INPUT), 6);
 }
 
 #[test]
 fn test_2024_day19_part2() {
-    // TODO
+    assert_eq!(part2(TEST_INPUT), 16);
 }
 
 #[allow(unused)]
@@ -45,5 +99,3 @@ pub fn run() {
     println!("Took {:?}", pt_start.elapsed().unwrap());
     println!("Total time: {:?}", start.elapsed().unwrap());
 }
-
-
