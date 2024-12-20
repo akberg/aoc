@@ -15,22 +15,6 @@ pub enum Direction {
     Left,
 }
 impl Direction {
-    pub fn rot_right(&self) -> Self {
-        match self {
-            Direction::Up => Direction::Right,
-            Direction::Right => Direction::Down,
-            Direction::Down => Direction::Left,
-            Direction::Left => Direction::Up,
-        }
-    }
-    pub fn rot_left(&self) -> Self {
-        match self {
-            Direction::Up => Direction::Left,
-            Direction::Right => Direction::Up,
-            Direction::Down => Direction::Right,
-            Direction::Left => Direction::Down,
-        }
-    }
     pub fn delta(&self, v: Vec2, scale: usize) -> Vec2 {
         let mut v = v.clone();
         match self {
@@ -113,12 +97,7 @@ fn parse_map(inputs: &str) -> (HashSet<Vec2>, Vec2, Vec2, usize, usize) {
 }
 
 /// Backtracking path, modified from day 16.
-fn backtrack_path(
-    links: &HashMap<Vec2, Vec2>,
-    start: Vec2,
-    mut end: Vec2,
-    path: &mut Vec<Vec2>,
-) {
+fn backtrack_path(links: &HashMap<Vec2, Vec2>, start: Vec2, mut end: Vec2, path: &mut Vec<Vec2>) {
     while end != start {
         let prev = &links[&end];
         path.insert(0, *prev);
@@ -132,6 +111,7 @@ fn shortest_path(
     map: HashSet<Vec2>,
     start_position: Vec2,
     end_position: Vec2,
+    known_path: &Vec<&Vec2>,
 ) -> Option<(usize, Vec<Vec2>)> {
     // Track shortest path to any point.
     let mut links: HashMap<Vec2, Vec2> = HashMap::new();
@@ -151,14 +131,20 @@ fn shortest_path(
     });
 
     while let Some(QueueElement { cost, position }) = queue.pop() {
-        println!("p={:?} c={}", position, cost);
+        // println!("p={:?} c={}", position, cost);
+        if let Some(j) = known_path.iter().position(|&&r| r == position) {
+            // Back on known shortest path, avoid computing more.
+            // (For this puzzle we don't really care about the specific path
+            // anymore).
+            return Some((cost + (known_path.len() - j), Vec::new()));
+        }
 
         if position == end_position {
             // Found shortest path. Store the length
             let mut path = Vec::with_capacity(cost);
             path.push(position);
             backtrack_path(&links, start_position, position, &mut path);
-            println!("Initial shortest path ({}): {:?}", path.len(), path);
+            // println!("Initial shortest path ({})", path.len());
             return Some((cost, path));
         }
 
@@ -189,16 +175,62 @@ fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
 }
 
-fn part1(inputs: &str) -> u32 {
-    let (map, start, end, height, width) = parse_map(inputs);
-    let (cost, path) = shortest_path(map, start, end).unwrap();
+fn available_shortcuts(input: &str, impact: usize) -> usize {
+    let (map, start, end, _height, _width) = parse_map(input);
+    let (cost, path) = shortest_path(map.clone(), start, end, &Vec::new()).unwrap();
+    let mut count = 0;
+    println!("Initial shortest path ({})", path.len());
 
-    for (i, position) in path.iter().enumerate() {
+    for (i, &position) in path.iter().enumerate() {
+        println!("Shortcuts from step {}", i);
         for d in Direction::iterator() {
-            // TODO: For any available shortcut, run shortest_path again
+            // For any available shortcut, run shortest_path again
+            // - One step is a wall
+            // - Two steps is not a wall
+            if !map.contains(&d.delta(position, 1)) && map.contains(&d.delta(position, 2)) {
+                let scost = if let Some(j) = path[(i + 1)..]
+                    .iter()
+                    .position(|e| e == &d.delta(position, 2))
+                {
+                    // Shortcut in known path
+                    let scost = cost - j + 1;
+                    print!(
+                        " Cuts to later (+{:>5}) in original path. exp.cost={:>5}",
+                        j, scost
+                    );
+                    scost
+                } else {
+                    // Possible shortcut through unchecked paths, recompute from current
+                    // position.
+                    print!(" New path.                                              ");
+                    let mut smap = map.clone();
+                    smap.insert(d.delta(position, 1));
+                    let (scost, _spath) = shortest_path(
+                        smap,
+                        position,
+                        end,
+                        &path.iter().skip(i + 1).collect::<Vec<_>>(),
+                    )
+                    .unwrap();
+                    scost + i
+                };
+                print!(" cost={:<5}", scost);
+                if scost < cost {
+                    println!(" Saving {}", cost - scost);
+                    if cost - scost >= impact {
+                        count += 1;
+                    }
+                } else {
+                    println!("");
+                }
+            }
         }
     }
-    0
+    count
+}
+
+fn part1(inputs: &str) -> usize {
+    available_shortcuts(inputs, 100)
 }
 
 fn part2(_inputs: &str) -> u32 {
@@ -224,7 +256,10 @@ static TEST_INPUT: &str = "###############
 
 #[test]
 fn test_2024_day20_part1() {
-    // TODO
+    println!("Too cool for testing");
+    // assert_eq!(available_shortcuts(TES_INPUTS, 2), 14);
+    // assert_eq!(available_shortcuts(TES_INPUTS, 4), 28);
+    // assert_eq!(available_shortcuts(TES_INPUTS, 4), 28);
 }
 
 #[test]
@@ -251,5 +286,3 @@ pub fn run() {
     println!("Took {:?}", pt_start.elapsed().unwrap());
     println!("Total time: {:?}", start.elapsed().unwrap());
 }
-
-
