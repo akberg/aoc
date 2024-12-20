@@ -1,6 +1,4 @@
-use std::io::Cursor;
-
-use image::{GenericImage, GrayImage, ImageBuffer, ImageEncoder, ImageReader, Rgb, RgbImage};
+use image::{Rgb, RgbImage};
 
 /// Keywords: Modulo, 2D Map, Visual Inspection, Variance, Chinese Remainder Theorem
 use super::YEAR;

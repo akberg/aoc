@@ -298,7 +298,7 @@ fn comp_gps(map: &Vec<Vec<MapTile>>) -> usize {
 /// moving loose object in front of it, and ignoring any instruction when
 /// blocked by a wall.
 fn part1(inputs: &(Vec<Vec<MapTile>>, Vec<Direction>, Vec2)) -> usize {
-    let (mut map, directions, mut pos) = inputs.clone();
+    let (mut map, directions, pos) = inputs.clone();
     run_robot(&mut map, &directions, pos);
     // Compute result, sum of 100y+x for each object.
     comp_gps(&map)
