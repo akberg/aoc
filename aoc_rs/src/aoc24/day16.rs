@@ -131,6 +131,7 @@ fn backtrack_path(
     }
 }
 
+/// Dijkstra all shortest paths
 fn shortest_path(
     map: HashSet<Vec2>,
     start_position: Vec2,
