@@ -1,4 +1,5 @@
 use std::collections::{BinaryHeap, HashMap, HashSet};
+use colored::Colorize;
 
 use super::YEAR;
 static DAY: usize = 16;
@@ -163,7 +164,7 @@ fn shortest_path(
     while let Some(QueueElement { cost, state }) = queue.pop() {
         let position = state.position;
         let rotation = state.rotation;
-        println!("p={:?} r={:?} c={}", position, rotation, cost);
+        // println!("p={:?} r={:?} c={}", position, rotation, cost);
 
         if position == end_position {
             // Found shortest path. Store the length
@@ -175,7 +176,7 @@ fn shortest_path(
             if Some(cost) == best_length {
                 let mut path = Vec::from([state]);
                 backtrack_path(&links, start_state, state, &mut path);
-                println!("New shortest path ({}): {:?}", path.len(), path);
+                // println!("New shortest path ({}): {:?}", path.len(), path);
                 paths.push((cost, path));
             }
             continue;
@@ -256,11 +257,11 @@ fn part2(inputs: &(HashSet<Vec2>, Vec2, Vec2, usize, usize)) -> usize {
         for x in 0..inputs.4 {
             let pos = Vec2::new(x as i64, y as i64);
             if visits.contains(&pos) {
-                print!("O");
+                print!("{}", "O".red());
             } else if inputs.0.contains(&pos) {
                 print!(".");
             } else {
-                print!("#");
+                print!("{}", "#".bold());
             }
         }
         println!("");
@@ -270,7 +271,8 @@ fn part2(inputs: &(HashSet<Vec2>, Vec2, Vec2, usize, usize)) -> usize {
 }
 
 #[allow(unused)]
-static TEST_INPUTS0: &str = "###############
+static TEST_INPUTS0: &str =
+"###############
  #.......#....E#
  #.#.###.#.###.#
  #.....#.#...#.#
