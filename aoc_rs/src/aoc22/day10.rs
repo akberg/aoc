@@ -71,13 +71,13 @@ pub fn part2(inputs: &str) -> Vec<Vec<char>> {
 
 #[test]
 fn test_day10_part1() {
-    let inputs = crate::aoc::_test_input_raw(10, 0);
+    let inputs = crate::aoc::_test_input_raw(2022, 10, 0);
     assert_eq!(part1(&inputs), 13140);
 }
 
 #[test]
 fn test_day10_part2() {
-    let inputs = crate::aoc::_test_input_raw(10, 0);
+    let inputs = crate::aoc::_test_input_raw(2022, 10, 0);
     let res = part2(&inputs);
     for y in 0..6 {
         for x in 0..40 {
