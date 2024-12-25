@@ -22,6 +22,7 @@ gcd = "*"
 image = "*"
 enum-primitive-derive = "*"
 num-traits = "*"
+rand = "*"
 
 [profile.release]
 debug = true
