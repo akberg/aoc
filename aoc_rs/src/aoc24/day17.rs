@@ -70,24 +70,23 @@ impl Computer {
 
         // Increase program counter (ignoring this operation if a jump executes)
         self.pc += 2;
-
         println!("{:?} {} ({},{})", instr, oprnd, instr as u8, oprnd);
 
         match instr {
             Instr::Adv => self.reg_a /= 2usize.pow(self.combo_op(oprnd) as u32),
             Instr::Bxl => self.reg_b ^= oprnd,
-            Instr::Bst => self.reg_b = self.combo_op(oprnd).rem(8),
+            Instr::Bst => self.reg_b = self.combo_op(oprnd) & 0x7,
             Instr::Jnz => {
-                if self.reg_a > 0 {
+                if self.reg_a != 0 {
                     self.pc = oprnd;
                 }
             }
             Instr::Bxc => self.reg_b ^= self.reg_c,
             Instr::Out => self
                 .output_buffer
-                .push(format!("{}", self.combo_op(oprnd).rem(8))),
-            Instr::Bdv => self.reg_b /= 2usize.pow(self.combo_op(oprnd) as u32),
-            Instr::Cdv => self.reg_c /= 2usize.pow(self.combo_op(oprnd) as u32),
+                .push(format!("{}", self.combo_op(oprnd) & 0x7)),
+            Instr::Bdv => self.reg_b = self.reg_a / 2usize.pow(self.combo_op(oprnd) as u32),
+            Instr::Cdv => self.reg_c = self.reg_a / 2usize.pow(self.combo_op(oprnd) as u32),
         }
     }
 
@@ -146,13 +145,15 @@ fn input() -> Computer {
     Computer::new(a, b, c, prog)
 }
 
-/// (1h30) Run computer as specified, and print output as a comma separated list.
+/// (Solved >2h) Run computer as specified, and print output as a comma-
+/// separated list.
+///
+/// Reading specifications is difficult...
 fn part1(inputs: &Computer) -> String {
     let mut comp = inputs.clone();
     comp.run();
     comp.output_buffer.join(",")
 }
-// 0,3,0,0,3,2,4,7,0 not correct
 
 fn part2(inputs: &Computer) -> String {
     let mut comp = inputs.clone();
