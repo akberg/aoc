@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use super::YEAR;
 static DAY: usize = 21;
 
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum KeyPadKey {
     Key0,
@@ -34,15 +35,15 @@ impl KeyPadKey {
             _ => panic!("Not a valid keypad key."),
         }
     }
-    fn adj(&self, dir: ArrowPadKey) -> Self {
+    fn adj(&self, dir: ArrowPadKey) -> Option<Self> {
         use KeyPadKey::*;
         match &self {
             KeyPadKey::Key0 => match dir {
-                ArrowPadKey::Left => panic!(),
-                ArrowPadKey::Right => KeyA,
-                ArrowPadKey::Up => Key2,
-                ArrowPadKey::Down => panic!(),
-                ArrowPadKey::Ack => todo!(),
+                ArrowPadKey::Left => None,
+                ArrowPadKey::Right => Some(KeyA),
+                ArrowPadKey::Up => Some(Key2),
+                ArrowPadKey::Down => None,
+                ArrowPadKey::Ack => Some(Key0),
             },
             KeyPadKey::Key1 => match dir {
                 ArrowPadKey::Left => todo!(),
@@ -170,6 +171,7 @@ impl std::fmt::Display for ArrowPadKey {
     }
 }
 
+/// ```md
 /// +---+---+---+
 /// | 7 | 8 | 9 |
 /// +---+---+---+
@@ -179,6 +181,7 @@ impl std::fmt::Display for ArrowPadKey {
 /// +---+---+---+
 ///     | 0 | A |
 ///     +---+---+
+/// ```
 fn keypad(from: KeyPadKey, to: KeyPadKey) -> Vec<ArrowPadKey> {
     use ArrowPadKey::*;
     use KeyPadKey::*;
@@ -190,12 +193,12 @@ fn keypad(from: KeyPadKey, to: KeyPadKey) -> Vec<ArrowPadKey> {
             Key1 => vec![Up, Left],
             Key2 => vec![Up],
             Key3 => vec![Up, Right],
-            Key4 => vec![Up, Up, Right],
+            Key4 => vec![Up, Up, Left],
             Key5 => vec![Up, Up],
-            Key6 => vec![Up],
-            Key7 => vec![Right, Right, Right, Left],
-            Key8 => vec![Right, Right, Right],
-            Key9 => vec![Right, Right, Right, Right],
+            Key6 => vec![Up, Up, Right],
+            Key7 => vec![Up, Up, Up, Left],
+            Key8 => vec![Up, Up, Up],
+            Key9 => vec![Up, Up, Up, Right],
             KeyA => vec![Right],
             _ => keypad(to, from).into_iter().rev().map(|a| a.reverse()).collect(),
         },
@@ -334,22 +337,56 @@ fn arrowpad(from: ArrowPadKey, to: ArrowPadKey) -> Vec<ArrowPadKey> {
     }
 }
 
-fn visualize(code: Vec<KeyPadKey>, mut sequences: Vec<Vec<ArrowPadKey>>) {
-    let mut sequences = sequences.into_iter().rev().collect::<Vec<_>>();
-    let mut key = KeyPadKey::KeyA;
+fn mv(pos: &mut Vec<(usize, usize)>, sequences: &mut Vec<Vec<ArrowPadKey>>, i: usize) -> bool {
+    if i == sequences.len() { return true; }
+    println!("  {} pressed {:?}", i, sequences[i][0]);
+    match sequences[i].remove(0) {
+        ArrowPadKey::Left => pos[i+1].0 -= 1,
+        ArrowPadKey::Right => pos[i+1].0 += 1,
+        ArrowPadKey::Up => pos[i+1].1 -= 1,
+        ArrowPadKey::Down => pos[i+1].1 += 1,
+        ArrowPadKey::Ack => return mv(pos, sequences, i+1),
+    }
+    false
+}
+
+// Print:
+//             789
+//             456
+//  ^A |  ^A | 123
+// <v> | <v> |  0A
+fn visualize(code: Vec<KeyPadKey>, sequences: Vec<Vec<ArrowPadKey>>) {
+    let mut sequences = sequences.into_iter().rev().collect::<Vec<Vec<_>>>();
+    let mut key = (2, 3);
+    let mut pos = vec![(2, 0); sequences.len()];
+    pos.push(key);
+
+    let arrowpad_s = [['.', '^', 'A'], ['<', 'v', '>']];
+    let keypad_s = [['7','8','9'], ['4','5','6'], ['1','2','3'],['.','0','A']];
 
     // Insert A as starting position
     for seq in sequences.iter_mut().skip(1) {
         seq.insert(0, ArrowPadKey::Ack);
     }
 
-    for seq in sequences {
-        print!("Ar: {} ", seq[0]);
+    for (i, seq) in sequences.iter().enumerate() {
+        print!(" {} ", arrowpad_s[pos[i].1][pos[i].0]);
+    }
+    println!(" {} \n", keypad_s[pos[sequences.len()].1][pos[sequences.len()].0]);
+
+    while sequences[0].len() > 0 {
+        if mv(&mut pos, &mut sequences, 0) {
+            println!("  Keypad {} pressed", keypad_s[pos[sequences.len()].1][pos[sequences.len()].0]);
+        }
+        for (i, seq) in sequences.iter().enumerate() {
+            print!(" {} ", arrowpad_s[pos[i].1][pos[i].0]);
+        }
+        println!(" {} \n", keypad_s[pos[sequences.len()].1][pos[sequences.len()].0]);
     }
 }
 
 // Get directions
-// For each order (horizontal first or vertical first)
+// For each order (horizonta
 
 fn input() -> String {
     crate::aoc::input_raw(YEAR, DAY)
@@ -397,6 +434,8 @@ fn compute_sequence(seq0: &str, n_robots: usize) -> Vec<ArrowPadKey> {
     seq
 }
 
+/// For each sequence:
+///
 fn part1(inputs: &str) -> usize {
     let n_robots = 2; // 2 robots + 1 manual user
     let mut sum = 0;
@@ -409,6 +448,7 @@ fn part1(inputs: &str) -> usize {
     sum
 }
 // 16426 too low
+// 16330 too low
 
 fn part2(inputs: &str) -> u32 {
     todo!();

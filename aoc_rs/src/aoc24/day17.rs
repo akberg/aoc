@@ -1,9 +1,10 @@
+/// Keywords: Compiler optimization
 use enum_primitive_derive::Primitive;
-use std::ops::Rem;
+// use std::ops::Rem;
 
 /// Keywords: Instruction Set, 3-bit
 // Derive Primitive for enum
-use num_traits::{FromPrimitive, ToPrimitive};
+use num_traits::FromPrimitive; //, ToPrimitive};
 
 use super::YEAR;
 static DAY: usize = 17;
@@ -38,7 +39,7 @@ struct Computer {
     reg_c: usize,
     pc: usize,
     prog: Vec<u8>,
-    pub output_buffer: Vec<String>,
+    pub output_buffer: Vec<u8>,
 }
 impl Computer {
     pub fn new(reg_a: usize, reg_b: usize, reg_c: usize, prog: Vec<u8>) -> Self {
@@ -65,12 +66,16 @@ impl Computer {
         }
     }
     fn step(&mut self) {
+        if self.pc == self.prog.len() {
+            println!("Halted");
+            return;
+        }
         let instr = Instr::from_u8(self.prog[self.pc]).unwrap();
         let oprnd = self.prog[self.pc + 1] as usize;
 
+        println!("{:?} {}   PC={}   {:?}", instr, oprnd, self.pc, self);
         // Increase program counter (ignoring this operation if a jump executes)
         self.pc += 2;
-        println!("{:?} {} ({},{})", instr, oprnd, instr as u8, oprnd);
 
         match instr {
             Instr::Adv => self.reg_a /= 2usize.pow(self.combo_op(oprnd) as u32),
@@ -82,19 +87,17 @@ impl Computer {
                 }
             }
             Instr::Bxc => self.reg_b ^= self.reg_c,
-            Instr::Out => self
-                .output_buffer
-                .push(format!("{}", self.combo_op(oprnd) & 0x7)),
+            Instr::Out => self.output_buffer.push(self.combo_op(oprnd) as u8 & 0x7),
             Instr::Bdv => self.reg_b = self.reg_a / 2usize.pow(self.combo_op(oprnd) as u32),
             Instr::Cdv => self.reg_c = self.reg_a / 2usize.pow(self.combo_op(oprnd) as u32),
         }
     }
 
     pub fn run(&mut self) {
-        println!("Run Computer\n{:?}", self);
+        // println!("Run Computer\n{:?}", self);
         while self.pc < self.prog.len() {
             self.step();
-            println!("{:?}", self);
+            // println!("{:?}", self);
         }
         // println!("Final output");
         // self.flush();
@@ -152,13 +155,77 @@ fn input() -> Computer {
 fn part1(inputs: &Computer) -> String {
     let mut comp = inputs.clone();
     comp.run();
-    comp.output_buffer.join(",")
+    comp.output_buffer
+        .into_iter()
+        .map(|i| format!("{}", i))
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
-fn part2(inputs: &Computer) -> String {
+fn dfs_prog(comp: Computer, depth: usize) -> Option<usize> {
+    let mut base = 0;
+    for i in 0..8 {
+        let mut test = comp.clone();
+        let a = comp.reg_a + (i << (3*(depth - 1)));
+        println!("depth = {} - a += {} = {}", depth, i, a);
+        test.reg_a = a;
+        test.run();
+
+        if test.output_buffer.len() >= depth && test.output_buffer[0..depth] == test.prog[0..depth]
+        {
+            base = a;
+            if depth == test.prog.len() {
+                return Some(test.reg_a);
+            }
+        }
+    }
+    for i in 0.. {
+        let mut test = comp.clone();
+        let a = comp.reg_a + ((base + i*8) << (3*depth - 1));
+        test.reg_a = a;
+        test.run();
+        if test.output_buffer.len() >= depth && test.output_buffer[0..depth] == test.prog[0..depth]
+        {
+            let mut n = comp.clone();
+            n.reg_a = a;
+            if let Some(x) = dfs_prog(n, depth + 1) {
+                return Some(x);
+            }
+        }
+    }
+    None
+}
+
+// XOR
+// 101 ^ 000 = 101
+//       001 = 100
+//       010 = 111
+//       011 = 110
+//       100 = 001
+//       101 = 000
+//       110 = 011
+//       111 = 010
+
+/// Find the starting value of A whichc makes the program output a copy of
+/// itself.
+fn part2(inputs: &Computer) -> usize {
+    // Loop:
+    //
+    // BST 4    B <- A              B=A[2:0]
+    // BXL 5    B <- B ^ 0b101      B=(A[2:0]) ^ 0b101
+    // CDV 5    C <- A >> B         C=A >> ((A[2:0]) ^ 0b101)
+    // BXL 6    B <- B ^ 0b100      B=(A[2:0]) ^ 1
+    // BXC 1    B <- B ^ C          B=((A[2:0]) ^ 1) ^ (A >> ((A[2:0]) ^ 0b101))
+    // OUT 5    print B             p (A ^ 1) ^ (A >> (A ^ 0b101))
+    // ADV 3    A <- A >> 3
+    // JNZ 0
+    //
+    // The loop processes 3 bits of A at the time, so it should suffice to
+    // compute 3-bitwise the correct value for A.
+    //
     let mut comp = inputs.clone();
-    // comp.run();
-    comp.output_buffer.join(",")
+    comp.reg_a = 0;
+    dfs_prog(comp, 1).unwrap()
 }
 
 #[test]
@@ -180,7 +247,15 @@ fn test_2024_day17_part1_1() {
 fn test_2024_day17_part1_2() {
     let mut input = Computer::new(10, 0, 0, vec![5, 0, 5, 1, 5, 4]);
     input.run();
-    assert_eq!(input.output_buffer.join(","), String::from("0,1,2"));
+    assert_eq!(
+        input
+            .output_buffer
+            .into_iter()
+            .map(|i| format!("{}", i))
+            .collect::<Vec<_>>()
+            .join(","),
+        String::from("0,1,2")
+    );
 }
 #[test]
 fn test_2024_day17_part1_3() {
@@ -188,7 +263,12 @@ fn test_2024_day17_part1_3() {
     input.run();
     assert_eq!(input.reg_a, 0);
     assert_eq!(
-        input.output_buffer.join(","),
+        input
+            .output_buffer
+            .into_iter()
+            .map(|i| format!("{}", i))
+            .collect::<Vec<_>>()
+            .join(","),
         String::from("4,2,5,6,7,7,7,7,3,1,0")
     );
 }
@@ -207,7 +287,8 @@ fn test_2024_day17_part1_5() {
 
 #[test]
 fn test_2024_day17_part2() {
-    // TODO
+    let input = Computer::new(10, 0, 0, vec![0, 3, 5, 4, 3, 0]);
+    assert_eq!(part2(&input), 117440);
 }
 
 #[allow(unused)]
