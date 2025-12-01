@@ -10,6 +10,7 @@ pub mod aoc;
 mod aoc22;
 mod aoc23;
 mod aoc24;
+mod aoc25;
 
 static FIRST_YEAR: usize = 2022;
 static YEAR: usize = 2024;
