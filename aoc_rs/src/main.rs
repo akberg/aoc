@@ -13,8 +13,8 @@ mod aoc24;
 mod aoc25;
 
 static FIRST_YEAR: usize = 2022;
-static YEAR: usize = 2024;
-static RUNS: [[fn(); 25]; 3] = [aoc22::RUNS, aoc23::RUNS, aoc24::RUNS];
+static YEAR: usize = 2025;
+static RUNS: [[fn(); 25]; 4] = [aoc22::RUNS, aoc23::RUNS, aoc24::RUNS, aoc25::RUNS];
 
 use chrono::{self, Datelike};
 use std::env;

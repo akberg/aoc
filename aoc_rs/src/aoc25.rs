@@ -13,19 +13,19 @@ pub static RUNS: [fn(); 25] = [
     day10::run,
     day11::run,
     day12::run,
-    day13::run,
-    day14::run,
-    day15::run,
-    day16::run,
-    day17::run,
-    day18::run,
-    day19::run,
-    day20::run,
-    day21::run,
-    day22::run,
-    day23::run,
-    day24::run,
-    day25::run,
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
+    || { println!("No puzzle this day.") },
 ];
 
 pub mod day01;
@@ -40,18 +40,3 @@ pub mod day09;
 pub mod day10;
 pub mod day11;
 pub mod day12;
-pub mod day13;
-pub mod day14;
-pub mod day15;
-pub mod day16;
-pub mod day17;
-pub mod day18;
-pub mod day19;
-pub mod day20;
-pub mod day21;
-pub mod day22;
-pub mod day23;
-pub mod day24;
-pub mod day25;
-
-
